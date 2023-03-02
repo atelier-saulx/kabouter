@@ -20,6 +20,7 @@ const Button: FC<{ onClick: MouseEventHandler; children: ReactNode }> = ({
   return (
     <button
       style={{
+        marginRight: 8,
         padding: 10,
         border: '2px solid black',
       }}
@@ -30,36 +31,38 @@ const Button: FC<{ onClick: MouseEventHandler; children: ReactNode }> = ({
   )
 }
 
-const SimpleRoute = () => {
-  console.info('UPDATE S ROUTE')
-
-  const [t, updateT] = useState(0)
-
-  //   useEffect(() => {
-  //     const i = setInterval(() => {
-  //       updateT((i) => i + 0.1)
-  //     }, 10)
-
-  //     return () => {
-  //       clearInterval(i)
-  //     }
-  //   }, [])
-
-  const route = useRoute('[flap]/[snur]/[snapje]/[bla]/[$]')
+const RouteWrapper = ({ children, id }) => {
+  const r = useRoute(`[${id}]`)
+  //   console.info(r)
   return (
     <div
       style={{
-        background: `linear-gradient(${
-          t * 100
-        }deg, rgba(0,255,255,0.1), rgba(255,255,0,0.1))`,
+        marginTop: 32,
+        marginLeft: 32,
+      }}
+    >
+      <div style={{ margin: 32, border: '2px solid black' }}>{id}</div>
+      <div
+        style={{
+          borderLeft: '2px solid black',
+          paddingLeft: 24,
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  )
+}
+
+const SimpleRoute = ({ id }) => {
+  //   console.info('UPDATE S ROUTE')
+
+  const route = useRoute(`${id}-[flap]/[snur]/[snapje]/[bla]`)
+  return (
+    <div
+      style={{
         width: 350,
-        // height: 500,
-        transition: 'transform 0.25s, background 0.25s',
-        transform: `perspective(1450px) rotateY(${t * 0.1}deg) rotateX(${
-          t * 0.1
-        }deg) translate(500px, 500px)`,
-        border: '3px solid black',
-        borderRadius: '5px',
+        border: '2px solid black',
         padding: 10,
         margin: 10,
       }}
@@ -76,12 +79,11 @@ const SimpleRoute = () => {
           route.setPath({
             bla: 'bla',
             flap: 'flap',
-            $: Math.round(Math.random() * 1e6),
             snapje: Math.round(Math.random() * 1e6),
           })
         }}
       >
-        Set snapje
+        update path
       </Button>
       <pre>{JSON.stringify(route.path, null, 2)}</pre>
     </div>
@@ -89,13 +91,33 @@ const SimpleRoute = () => {
 }
 
 export const Router = () => {
+  const [s, set] = useState(true)
   const routes = useRouterListeners()
   return (
-    <>
-      <RouterContext.Provider value={routes}>
-        <SimpleRoute />
-      </RouterContext.Provider>
-    </>
+    <div style={{ padding: 100 }}>
+      <Button
+        onClick={() => {
+          set(!s)
+        }}
+      >
+        Flip
+      </Button>
+      {s ? (
+        <RouterContext.Provider value={routes}>
+          <RouteWrapper id="a">
+            <RouteWrapper id="ab">
+              <SimpleRoute id="aba" />
+              <SimpleRoute id="abb" />
+            </RouteWrapper>
+
+            <RouteWrapper id="ac">
+              <SimpleRoute id="aca" />
+              <SimpleRoute id="acb" />
+            </RouteWrapper>
+          </RouteWrapper>
+        </RouterContext.Provider>
+      ) : null}
+    </div>
   )
 }
 

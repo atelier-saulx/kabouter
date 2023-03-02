@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useMemo } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+} from 'react'
 import { useUpdate } from './useUpdate'
 import { RouterContext } from './Provider'
 import { parseQuery } from '@saulx/utils'
@@ -117,11 +123,18 @@ export const useRouterListeners = (path?: string): RouterCtx => {
 let cnt = 0
 
 export const useRoute = (path?: string): RouteParams => {
+  const id = useMemo(() => ++cnt, [])
+
+  useEffect(() => {
+    console.log('RENDER EFFECT', path, id)
+    return () => {
+      console.log('REMOVE EFFECT', path, id)
+    }
+  }, [id])
+
+  console.info('COMPONENT 1', path, id)
+
   const ctx = useContext(RouterContext)
-  const node =
-    //   @ts-ignore
-    React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner
-      .current
 
   const routeParams = useMemo(() => {
     return new RouteParams(ctx, path)
@@ -129,43 +142,37 @@ export const useRoute = (path?: string): RouteParams => {
 
   useEffect(() => {
     return () => {
-      ctx.componentMap.delete(node)
+      ctx.componentMap.delete(id)
     }
   }, [])
 
   const update = useUpdate()
 
-  if (node) {
-    if (!node._id) {
-      node._id = ++cnt
-    }
+  let parent // node.return
+  let parentStore = ctx.componentMap.get(parent)
+  //   while (!parentStore) {
+  //     parent = parent.return
+  //     if (parent) {
+  //       parentStore = ctx.componentMap.get(parent)
+  //     } else {
+  //       break
+  //     }
+  //   }
 
-    let parent = node.return
-    let parentStore = ctx.componentMap.get(parent)
-    while (!parentStore) {
-      parent = parent.return
-      if (parent) {
-        parentStore = ctx.componentMap.get(parent)
-      } else {
-        break
+  // set start
+  routeParams.start = parentStore
+    ? parentStore.start + parentStore.path.length
+    : ctx.rootPath.length
+
+  ctx.componentMap.set(id, {
+    path: routeParams.parsedPath,
+    start: routeParams.start,
+    update: useCallback(() => {
+      if (routeParams.update()) {
+        update()
       }
-    }
-
-    // set start
-    routeParams.start = parentStore
-      ? parentStore.start + parentStore.path.length
-      : ctx.rootPath.length
-
-    ctx.componentMap.set(node, {
-      path: routeParams.parsedPath,
-      start: routeParams.start,
-      update: useCallback(() => {
-        if (routeParams.update()) {
-          update()
-        }
-      }, [path]),
-    })
-  }
+    }, [path]),
+  })
 
   return routeParams
 }

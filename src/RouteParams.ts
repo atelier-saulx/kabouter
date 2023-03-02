@@ -149,6 +149,8 @@ export class RouteParams {
     const [pathName, q] = s.split('?')
     const x = pathName.split('/')
 
+    console.error(s, x)
+
     results.forEach((v, k) => {
       const newIndex = k + this.start + 1
       if (newIndex > x.length - 1) {
@@ -156,6 +158,9 @@ export class RouteParams {
           x.push('')
         }
       }
+
+      console.error(s, x, newIndex, 'START:', this.start, v[0])
+
       x[newIndex] = v[0]
     })
 
@@ -174,6 +179,8 @@ export class RouteParams {
         )
         .join('/')
     )
+
+    console.error(x, newLocation)
 
     return this.setLocation(newLocation)
   }
