@@ -37,9 +37,11 @@
     "extends": "@saulx/eslint-config"
   },
   "dependencies": {
-    "@saulx/hash": "^2.0.0"
+    "@saulx/hash": "^2.0.0",
+    "@saulx/utils": "^3.2.1"
   },
   "devDependencies": {
+    "esbuild": "0.17.10",
     "@saulx/eslint-config": "https://github.com/atelier-saulx/eslint-config",
     "@saulx/prettier-config": "https://github.com/atelier-saulx/prettier-config",
     "ava": "3.15.0",

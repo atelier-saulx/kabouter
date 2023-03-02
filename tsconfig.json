@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "module": "commonjs",
+    "jsx": "react",
+    "target": "es2021",
+    "module": "ESNext",
     "moduleResolution": "node",
     "sourceMap": true,
     "removeComments": false,
@@ -11,9 +12,17 @@
     "emitDecoratorMetadata": true,
     "declaration": true,
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "rootDir": "./src",
     "outDir": "./dist",
-    "resolveJsonModule": true
+    "paths": {
+      "~": ["src"],
+      "~/*": ["src/*"]
+    }
   },
-  "strict": true,
-  "exclude": ["node_modules", "test", "dist", "_src"]
+  "exclude": ["node_modules", "dist", "scripts", "functions", "test"],
+  "types": ["typePatches"]
 }
