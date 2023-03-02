@@ -15,7 +15,11 @@ const parseRoute = (
       const pSeg = segs[i].match(matcher)
       if (pSeg) {
         for (let x = 1; x < pSeg.length; x++) {
-          params[vars[x - 1]] = pSeg[x]
+          if (pSeg[x] === '*' || pSeg[x] === undefined) {
+            params[vars[x - 1]] = undefined
+          } else {
+            params[vars[x - 1]] = pSeg[x]
+          }
         }
       }
     }
@@ -46,12 +50,15 @@ export class RouteParams {
 
   constructor(ctx: RouterCtx, path?: string) {
     this.ctx = ctx
+    this._pathParams = {}
+
     if (!path) {
       this.parsedPath = []
       return this
     }
 
     const p = path.split('/')
+
     this.parsedPath = []
     for (const seg of p) {
       const matchers = seg.match(matchVars)
@@ -72,6 +79,7 @@ export class RouteParams {
 
     if (this.parsedPath.length && this.ctx.pathChanged) {
       const nParams = parseRoute(this.ctx, this.parsedPath, this.start)
+
       if (!deepEqual(this._pathParams, nParams)) {
         this._pathParams = nParams
         return true
@@ -112,10 +120,9 @@ export class RouteParams {
   }
 
   setPath(p: { [key: string]: Value }): boolean {
-    if (this._pathParams)
-      if (deepEqual(this._pathParams, p)) {
-        return false
-      }
+    if (deepEqual(this._pathParams, p)) {
+      return false
+    }
     const results: Map<number, [string, Set<string>]> = new Map()
     for (let i = this.parsedPath.length - 1; i > -1; i--) {
       const parsed = this.parsedPath[i]
@@ -141,18 +148,33 @@ export class RouteParams {
     const [s, hash = ''] = this.ctx.location.split('#')
     const [pathName, q] = s.split('?')
     const x = pathName.split('/')
+
     results.forEach((v, k) => {
-      x[k + this.start + 1] = v[0]
+      const newIndex = k + this.start + 1
+      if (newIndex > x.length - 1) {
+        for (let i = 0; i < newIndex - (x.length - 1); i++) {
+          x.push('')
+        }
+      }
+      x[newIndex] = v[0]
     })
+
     const newLocation = parseLocation(
       q,
       hash,
       x
-        .map((v) =>
-          v === undefined ? '' : typeof v === 'object' ? JSON.stringify(v) : v
+        .map((v, i) =>
+          v === undefined || v === ''
+            ? i > 0
+              ? '*'
+              : ''
+            : typeof v === 'object'
+            ? JSON.stringify(v)
+            : v
         )
         .join('/')
     )
+
     return this.setLocation(newLocation)
   }
 
@@ -199,6 +221,7 @@ export class RouteParams {
     if (location === this.ctx.location) {
       return false
     }
+
     const [s, hash = ''] = location.split('#')
     const [pathName, q] = s.split('?')
     this.ctx.hash = hash

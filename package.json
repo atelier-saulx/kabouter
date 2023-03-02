@@ -5,7 +5,9 @@
   "scripts": {
     "build": "npx tsc",
     "watch": "npx tsc --watch",
-    "test": "npx ava --verbose"
+    "test": "npx ava --verbose",
+    "test-browser": "npx aristotle watch -t test/browser/index.tsx -p 3010",
+    "build-browser": "npx aristotle build -t test/browser/index.tsx -d test/browser/dist"
   },
   "repository": "https://github.com/atelier-saulx/kabouter",
   "lint-staged": {
@@ -42,11 +44,14 @@
   },
   "devDependencies": {
     "esbuild": "0.17.10",
+    "react-dom": "^18.2.0",
+    "@saulx/aristotle-server": "^1.1.0",
     "@saulx/eslint-config": "https://github.com/atelier-saulx/eslint-config",
     "@saulx/prettier-config": "https://github.com/atelier-saulx/prettier-config",
     "ava": "3.15.0",
     "eslint": "^7.18.0",
     "husky": "^3.0.8",
+    "@saulx/aristotle": "^4.6.0",
     "react": "^18.2.0",
     "@types/react": "^18.0.28",
     "@types/node": "^18.0.0",
