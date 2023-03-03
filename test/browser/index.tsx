@@ -44,11 +44,6 @@ const RouteWrapper = ({ children, id }) => {
 }
 
 const SimpleRoute = ({ id }) => {
-  // console.info('UPDATE S ROUTE')
-  /*
-    route.Boundary
-  */
-
   const route = useRoute(`${id}-[flap]/[snur]/[snapje]/[bla]`)
   return (
     <div
@@ -85,7 +80,7 @@ const SimpleRoute = ({ id }) => {
 
 export const Router = () => {
   const [s, set] = useState(true)
-  const routes = useRouterListeners('/root')
+  const routes = useRouterListeners()
   return (
     <div style={{ padding: 100 }}>
       <Button

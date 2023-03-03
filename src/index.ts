@@ -37,7 +37,7 @@ const parseLocation = (q: string, hash: string, pathName: string): string => {
     : pathName
 }
 
-export const useRouterListeners = (path: string = '/'): RouterCtx => {
+export const useRouterListeners = (path: string = ''): RouterCtx => {
   const routes = useMemo(() => {
     // TODO: fix for server side
     const p = path.split('/')
@@ -62,12 +62,9 @@ export const useRouterListeners = (path: string = '/'): RouterCtx => {
         const ordered = [...componentMap.values()].sort((a, b) => {
           return a.start < b.start ? -1 : a.start === b.start ? 0 : 1
         })
-        // Want this to be ordered (top first)
-
         ordered.forEach((v) => {
           v.update()
         })
-
         routes.pathChanged = false
         routes.hashChanged = false
         routes.queryChanged = false

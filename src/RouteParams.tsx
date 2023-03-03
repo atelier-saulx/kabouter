@@ -22,12 +22,8 @@ const parseRoute = (
     if (i > start) {
       const seg = segs[i]
       const { vars, matcher } = path[i - start - 1]
-
       if (seg) {
         const pSeg = segs[i].match(matcher)
-
-        //  const x = fromPath[i].replace(/\[.+\]/, '')
-
         if (pSeg) {
           for (let x = 1; x < pSeg.length; x++) {
             if (pSeg[x] === '*' || pSeg[x] === undefined) {
@@ -41,6 +37,8 @@ const parseRoute = (
         }
       }
     } else {
+      console.info(segs, fromPath)
+
       const x = fromPath[i].replace(/\[.+\]/, '')
       if (x !== segs[i]) {
         return {}
@@ -217,6 +215,9 @@ export class RouteParams {
 
     for (let i = 0; i < this._fromPath.length; i++) {
       const y = this._fromPath[i].replace(/\[.+\]/, '')
+
+      console.info('--->', y, x[i], this._fromPath)
+
       if (y !== x[i]) {
         newPath.push(y)
       } else {
@@ -248,6 +249,8 @@ export class RouteParams {
         )
         .join('/')
     )
+
+    console.info(newPath, newLocation)
 
     return this.setLocation(newLocation)
   }
