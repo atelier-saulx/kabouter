@@ -1,9 +1,11 @@
 import { useCallback, useContext, useEffect, useMemo } from 'react'
 import { useUpdate } from './useUpdate'
-import { RouterContext } from './Provider'
+import { RouterContext, Router } from './Provider'
 import { parseQuery } from '@saulx/utils'
-import { RouterCtx, ComponentMap, RouterRootCtx } from './types'
+import { ComponentMap, RouterRootCtx } from './types'
 import { RouteParams } from './RouteParams'
+
+export { Router }
 
 // maybe make this into a seperate pkg? or make sure parsing works well
 export const parseHref = (href = '/') => {
@@ -37,7 +39,7 @@ const parseLocation = (q: string, hash: string, pathName: string): string => {
     : pathName
 }
 
-export const useRouterListeners = (path: string = ''): RouterCtx => {
+export const useRouterListeners = (path: string = ''): RouterRootCtx => {
   const routes = useMemo(() => {
     // TODO: fix for server side
     const p = path.split('/')

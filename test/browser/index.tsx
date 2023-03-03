@@ -1,18 +1,27 @@
-import React, { FC, MouseEventHandler, ReactNode, useState } from 'react'
-import { useRoute, useRouterListeners } from '../../src'
+import React, {
+  CSSProperties,
+  FC,
+  MouseEventHandler,
+  ReactNode,
+  useState,
+} from 'react'
+import { useRoute, Router } from '../../src'
 import { createRoot } from 'react-dom/client'
-import { RouterContext } from '../../src/Provider'
 
-const Button: FC<{ onClick: MouseEventHandler; children: ReactNode }> = ({
-  children,
-  onClick,
-}) => {
+// useQueryParamState
+
+const Button: FC<{
+  onClick: MouseEventHandler
+  children: ReactNode
+  style?: CSSProperties
+}> = ({ children, onClick, style }) => {
   return (
     <button
       style={{
         marginRight: 8,
         padding: 10,
         border: '2px solid black',
+        ...style,
       }}
       onClick={onClick}
     >
@@ -23,6 +32,7 @@ const Button: FC<{ onClick: MouseEventHandler; children: ReactNode }> = ({
 
 const RouteWrapper = ({ children, id }) => {
   const route = useRoute(`wrapper-${id}[bla]`)
+
   return (
     <div
       style={{
@@ -30,7 +40,27 @@ const RouteWrapper = ({ children, id }) => {
         marginLeft: 32,
       }}
     >
-      <div style={{ margin: 32, border: '2px solid black' }}>{id}</div>
+      <div style={{ margin: 32, border: '2px solid black' }}>
+        <span
+          style={{
+            fontFamily: 'helvetica',
+            fontSize: 24,
+            marginLeft: 32,
+          }}
+        >
+          {id}
+        </span>
+        <Button
+          style={{
+            margin: 15,
+          }}
+          onClick={() => {
+            route.setQuery({ hello: true, gur: [1, 2, 3, 4, 5], id })
+          }}
+        >
+          Set q parameters
+        </Button>
+      </div>
       <div
         style={{
           borderLeft: '2px solid black',
@@ -44,6 +74,8 @@ const RouteWrapper = ({ children, id }) => {
 }
 
 const SimpleRoute = ({ id }) => {
+  console.info('RENDER SIMPLE ROUTE', id)
+
   const route = useRoute(`${id}-[flap]/[snur]/[snapje]/[bla]`)
   return (
     <div
@@ -78,9 +110,8 @@ const SimpleRoute = ({ id }) => {
   )
 }
 
-export const Router = () => {
+export const RouterExample = () => {
   const [s, set] = useState(true)
-  const routes = useRouterListeners()
   return (
     <div style={{ padding: 100 }}>
       <Button
@@ -91,19 +122,18 @@ export const Router = () => {
         Flip
       </Button>
       {s ? (
-        <RouterContext.Provider value={routes}>
+        <Router>
           <RouteWrapper id="a">
             <RouteWrapper id="ab">
               <SimpleRoute id="aba" />
               <SimpleRoute id="abb" />
             </RouteWrapper>
-
             <RouteWrapper id="ac">
               <SimpleRoute id="aca" />
               <SimpleRoute id="acb" />
             </RouteWrapper>
           </RouteWrapper>
-        </RouterContext.Provider>
+        </Router>
       ) : null}
     </div>
   )
@@ -112,4 +142,4 @@ export const Router = () => {
 // render(element, container[, callback])
 const root = createRoot(document.body)
 
-root.render(<Router />)
+root.render(<RouterExample />)

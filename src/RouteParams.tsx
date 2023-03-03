@@ -37,8 +37,6 @@ const parseRoute = (
         }
       }
     } else {
-      console.info(segs, fromPath)
-
       const x = fromPath[i].replace(/\[.+\]/, '')
       if (x !== segs[i]) {
         return {}
@@ -136,9 +134,11 @@ export class RouteParams {
         this.start
       )
 
-      if (!deepEqual(this._pathParams, nParams)) {
+      if (!deepEqual(this._pathParams || {}, nParams)) {
         this._pathParams = nParams
         return true
+      } else {
+        return false
       }
     }
 
@@ -150,7 +150,7 @@ export class RouteParams {
       return true
     }
 
-    return true
+    return false
   }
 
   get location(): string {
@@ -215,9 +215,6 @@ export class RouteParams {
 
     for (let i = 0; i < this._fromPath.length; i++) {
       const y = this._fromPath[i].replace(/\[.+\]/, '')
-
-      console.info('--->', y, x[i], this._fromPath)
-
       if (y !== x[i]) {
         newPath.push(y)
       } else {
@@ -249,8 +246,6 @@ export class RouteParams {
         )
         .join('/')
     )
-
-    console.info(newPath, newLocation)
 
     return this.setLocation(newLocation)
   }
