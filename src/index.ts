@@ -7,7 +7,6 @@ import { RouteParams } from './RouteParams'
 
 export { Router }
 
-// maybe make this into a seperate pkg? or make sure parsing works well
 export const parseHref = (href = '/') => {
   if (href !== '/' && href[href.length - 1] === '/') {
     href = href.slice(0, -1)
@@ -37,6 +36,26 @@ const parseLocation = (q: string, hash: string, pathName: string): string => {
     : hash
     ? pathName + '#' + hash
     : pathName
+}
+
+export const useSearchParam = <T = any>(
+  key: string,
+  defaultValue?: T
+): [T, (value: null | T | ((value: T) => T)) => void] => {
+  const route = useRoute()
+  const params = route.query
+  const val = <T>params[key] ?? defaultValue
+  return [
+    val,
+    (v) => {
+      if (typeof v === 'function') {
+        // @ts-ignore
+        route.setQuery({ [key]: v(val) })
+      } else {
+        route.setQuery({ [key]: v })
+      }
+    },
+  ]
 }
 
 export const useRouterListeners = (path: string = ''): RouterRootCtx => {

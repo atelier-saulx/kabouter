@@ -5,10 +5,10 @@ import React, {
   ReactNode,
   useState,
 } from 'react'
-import { useRoute, Router } from '../../src'
+import { useRoute, Router, useSearchParam } from '../../src'
 import { createRoot } from 'react-dom/client'
 
-// useQueryParamState
+// [params, setParams] = useSearchParam<type>('key', default)
 
 const Button: FC<{
   onClick: MouseEventHandler
@@ -27,6 +27,39 @@ const Button: FC<{
     >
       {children}
     </button>
+  )
+}
+
+const Page = () => {
+  const [param, setParam] = useSearchParam('x', 1)
+
+  const route = useRoute('pages/[pageId]/[pageNumber]')
+  const { pageId, pageNumber } = route.path
+  return (
+    <div
+      style={{
+        margin: 30,
+        padding: 30,
+        border: '1px solid blue',
+      }}
+      onClick={() => {
+        route.setPath({
+          pageNumber: Number(pageNumber || 0) + 1,
+        })
+      }}
+    >
+      Pages
+      {pageId} {pageNumber}
+      X: {param}
+      <div
+        onClick={() => {
+          setParam(~~(Math.random() * 1000))
+        }}
+      >
+        set x
+      </div>
+      <div onClick={() => setParam(null)}>clear x</div>
+    </div>
   )
 }
 
@@ -114,27 +147,30 @@ export const RouterExample = () => {
   const [s, set] = useState(true)
   return (
     <div style={{ padding: 100 }}>
-      <Button
-        onClick={() => {
-          set(!s)
-        }}
-      >
-        Flip
-      </Button>
-      {s ? (
-        <Router>
-          <RouteWrapper id="a">
-            <RouteWrapper id="ab">
-              <SimpleRoute id="aba" />
-              <SimpleRoute id="abb" />
+      <Router>
+        <Button
+          onClick={() => {
+            set(!s)
+          }}
+        >
+          Flip
+        </Button>
+        {s ? (
+          <>
+            <RouteWrapper id="a">
+              <RouteWrapper id="ab">
+                <SimpleRoute id="aba" />
+                <SimpleRoute id="abb" />
+              </RouteWrapper>
+              <RouteWrapper id="ac">
+                <SimpleRoute id="aca" />
+                <SimpleRoute id="acb" />
+              </RouteWrapper>
             </RouteWrapper>
-            <RouteWrapper id="ac">
-              <SimpleRoute id="aca" />
-              <SimpleRoute id="acb" />
-            </RouteWrapper>
-          </RouteWrapper>
-        </Router>
-      ) : null}
+            <Page />
+          </>
+        ) : null}
+      </Router>
     </div>
   )
 }

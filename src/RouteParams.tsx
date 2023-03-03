@@ -17,7 +17,6 @@ const parseRoute = (
 ): PathParams => {
   const params = {}
   const segs = rootCtx.pathName.split('/')
-
   for (let i = 0; i < path.length + start + 1; i++) {
     if (i > start) {
       const seg = segs[i]
@@ -184,6 +183,7 @@ export class RouteParams {
     if (deepEqual(this._pathParams, p)) {
       return false
     }
+
     const results: Map<number, [string, Set<string>]> = new Map()
     for (let i = this.parsedPath.length - 1; i > -1; i--) {
       const parsed = this.parsedPath[i]
@@ -222,8 +222,9 @@ export class RouteParams {
       }
     }
 
+    // make all thwse replaces perpared
     for (let i = 0; i < this._path.length; i++) {
-      newPath.push('')
+      newPath.push(this._path[i].replace(/\[.+\]/, ''))
     }
 
     results.forEach((v, k) => {
@@ -258,6 +259,11 @@ export class RouteParams {
         this.rootCtx.query = query
       } else {
         deepMerge(this.rootCtx.query || {}, query)
+      }
+    }
+    for (const key in this.rootCtx.query) {
+      if (this.rootCtx.query[key] === null) {
+        delete this.rootCtx.query[key]
       }
     }
     const q = serializeQuery(this.rootCtx.query)
