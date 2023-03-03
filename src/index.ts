@@ -16,7 +16,6 @@ export const parseHref = (href = '/') => {
     if (i !== -1) {
       const a = new URLSearchParams(search)
       const b = new URLSearchParams(href.substring(i))
-
       b.forEach((value, key) => {
         a.set(key, value)
       })
@@ -64,8 +63,6 @@ export const useRouterListeners = (path: string = '/'): RouterCtx => {
           return a.start < b.start ? -1 : a.start === b.start ? 0 : 1
         })
         // Want this to be ordered (top first)
-
-        console.info('update loc', ctx.location)
 
         ordered.forEach((v) => {
           v.update()

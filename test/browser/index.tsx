@@ -71,6 +71,7 @@ const SimpleRoute = ({ id }) => {
           route.setPath({
             bla: 'bla',
             flap: 'flap',
+
             snapje: Math.round(Math.random() * 1e6),
           })
         }}
