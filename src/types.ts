@@ -6,8 +6,6 @@ export type QueryParams = {
 
 export type Value = string | number | boolean
 
-// will be a class...
-
 export type PathParams = { [key: string]: Value }
 
 export type ComponentMap = Map<
@@ -19,8 +17,9 @@ export type ComponentMap = Map<
   }
 >
 
-export type RouterCtx = {
-  rootPath: string[]
+export type RouterRootCtx = {
+  isRoot: true
+  path: string[]
   updateRoute: (fromPopState: boolean) => void
   pathName: string
   query: QueryParams
@@ -30,5 +29,16 @@ export type RouterCtx = {
   queryChanged: boolean
   hashChanged: boolean
   pathChanged: boolean
+  children: RouterCtx[]
+  parent?: RouterCtx
   componentMap: ComponentMap
 }
+
+export type RouteChildCtx = {
+  isRoot: false
+  path: string[]
+  parent?: RouterCtx
+  children: RouterCtx[]
+}
+
+export type RouterCtx = RouterRootCtx | RouteChildCtx

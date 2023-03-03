@@ -1,14 +1,8 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-} from 'react'
+import { useCallback, useContext, useEffect, useMemo } from 'react'
 import { useUpdate } from './useUpdate'
 import { RouterContext } from './Provider'
 import { parseQuery } from '@saulx/utils'
-import { RouterCtx, ComponentMap } from './types'
+import { RouterCtx, ComponentMap, RouterRootCtx } from './types'
 import { RouteParams } from './RouteParams'
 
 // maybe make this into a seperate pkg? or make sure parsing works well
@@ -44,40 +38,48 @@ const parseLocation = (q: string, hash: string, pathName: string): string => {
     : pathName
 }
 
-export const useRouterListeners = (path?: string): RouterCtx => {
+export const useRouterListeners = (path: string = '/'): RouterCtx => {
   const routes = useMemo(() => {
     // TODO: fix for server side
-    const p = path ? path.split('/').slice(1) : []
+    const p = path.split('/')
     const pathName = window.location.pathname
     const q = window.location.search.substring(1)
     const hash = window.location.hash
     const componentMap: ComponentMap = new Map()
-    const ctx: RouterCtx = {
+
+    const location = parseLocation(q, hash, pathName)
+
+    const ctx: RouterRootCtx = {
+      isRoot: true,
+      componentMap,
       hashChanged: false,
       queryChanged: false,
       pathChanged: false,
       hash,
       pathName,
       query: q ? parseQuery(q) || {} : {},
-      location: parseLocation(q, hash, pathName),
+      location,
       updateRoute: (fromPopState) => {
         const ordered = [...componentMap.values()].sort((a, b) => {
           return a.start < b.start ? -1 : a.start === b.start ? 0 : 1
         })
         // Want this to be ordered (top first)
+
+        console.info('update loc', ctx.location)
+
         ordered.forEach((v) => {
           v.update()
         })
+
         routes.pathChanged = false
         routes.hashChanged = false
         routes.queryChanged = false
         if (!fromPopState) {
-          console.info('-------> PUSH ', ctx.location)
           global.history.pushState(undefined, undefined, ctx.location)
         }
       },
-      rootPath: p,
-      componentMap,
+      children: [],
+      path: p,
     }
     return ctx
   }, [path])
@@ -123,48 +125,40 @@ export const useRouterListeners = (path?: string): RouterCtx => {
 let cnt = 0
 
 export const useRoute = (path?: string): RouteParams => {
-  const id = useMemo(() => ++cnt, [])
-
-  useEffect(() => {
-    console.log('RENDER EFFECT', path, id)
-    return () => {
-      console.log('REMOVE EFFECT', path, id)
-    }
-  }, [id])
-
-  console.info('COMPONENT 1', path, id)
-
   const ctx = useContext(RouterContext)
 
-  const routeParams = useMemo(() => {
-    return new RouteParams(ctx, path)
-  }, [path])
+  let parent = ctx
+  let rootCtx: RouterRootCtx
 
-  useEffect(() => {
-    return () => {
-      ctx.componentMap.delete(id)
+  const fromPath: string[] = []
+
+  while (parent && !rootCtx) {
+    fromPath.unshift(...parent.path)
+
+    if (parent.isRoot) {
+      rootCtx = parent
+      break
     }
-  }, [])
+
+    parent = parent.parent
+  }
+
+  const id = useMemo(() => ++cnt, [])
+  const start = fromPath.length - 1
+
+  const routeParams = useMemo(() => {
+    return new RouteParams(ctx, rootCtx, start, fromPath, path)
+  }, [path, start])
 
   const update = useUpdate()
 
-  let parent // node.return
-  let parentStore = ctx.componentMap.get(parent)
-  //   while (!parentStore) {
-  //     parent = parent.return
-  //     if (parent) {
-  //       parentStore = ctx.componentMap.get(parent)
-  //     } else {
-  //       break
-  //     }
-  //   }
+  useEffect(() => {
+    return () => {
+      rootCtx.componentMap.delete(id)
+    }
+  }, [])
 
-  // set start
-  routeParams.start = parentStore
-    ? parentStore.start + parentStore.path.length
-    : ctx.rootPath.length
-
-  ctx.componentMap.set(id, {
+  rootCtx.componentMap.set(id, {
     path: routeParams.parsedPath,
     start: routeParams.start,
     update: useCallback(() => {

@@ -1,17 +1,7 @@
-import React, {
-  FC,
-  MouseEventHandler,
-  ReactNode,
-  useEffect,
-  useState,
-} from 'react'
+import React, { FC, MouseEventHandler, ReactNode, useState } from 'react'
 import { useRoute, useRouterListeners } from '../../src'
-import { createRoot } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { RouterContext } from '../../src/Provider'
-
-// if (window.location.pathname !== '/') {
-//   window.location.pathname = '/'
-// }
 
 const Button: FC<{ onClick: MouseEventHandler; children: ReactNode }> = ({
   children,
@@ -32,8 +22,7 @@ const Button: FC<{ onClick: MouseEventHandler; children: ReactNode }> = ({
 }
 
 const RouteWrapper = ({ children, id }) => {
-  const r = useRoute(`[${id}]`)
-  //   console.info(r)
+  const route = useRoute(`wrapper-${id}[bla]`)
   return (
     <div
       style={{
@@ -48,14 +37,17 @@ const RouteWrapper = ({ children, id }) => {
           paddingLeft: 24,
         }}
       >
-        {children}
+        {route.nest(children)}
       </div>
     </div>
   )
 }
 
 const SimpleRoute = ({ id }) => {
-  //   console.info('UPDATE S ROUTE')
+  // console.info('UPDATE S ROUTE')
+  /*
+    route.Boundary
+  */
 
   const route = useRoute(`${id}-[flap]/[snur]/[snapje]/[bla]`)
   return (
@@ -92,7 +84,7 @@ const SimpleRoute = ({ id }) => {
 
 export const Router = () => {
   const [s, set] = useState(true)
-  const routes = useRouterListeners()
+  const routes = useRouterListeners('/root')
   return (
     <div style={{ padding: 100 }}>
       <Button
