@@ -38,6 +38,19 @@ const parseLocation = (q: string, hash: string, pathName: string): string => {
     : pathName
 }
 
+/**
+Hook to interact with a single search param, set to `null` to clear
+
+```javascript 
+const [counter, setCounter] = useSearchParam('counter', 0)
+
+<div onClick={() => {
+        setCounter((counter) => counter + 1)
+}}>
+        {counter}
+</div>
+```
+*/
 export const useSearchParam = <T = any>(
   key: string,
   defaultValue?: T
@@ -139,6 +152,26 @@ export const useRouterListeners = (path: string = ''): RouterRootCtx => {
 
 let cnt = 0
 
+/**
+Hook to listen to and update `location`
+
+```javascript
+  const route = useRoute('books/[book]/[page]')
+  const { book, page } = route.path
+
+  <div
+      onClick={() => {
+        // Will result in path "/book/mybook/1"
+        route.setPath({
+          book,
+          page: page + 1,
+        })
+      }}
+    >
+      {book} {page}
+    </div>
+```
+*/
 export const useRoute = (path?: string): RouteParams => {
   const ctx = useContext(RouterContext)
 

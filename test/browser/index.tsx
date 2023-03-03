@@ -8,8 +8,6 @@ import React, {
 import { useRoute, Router, useSearchParam } from '../../src'
 import { createRoot } from 'react-dom/client'
 
-// [params, setParams] = useSearchParam<type>('key', default)
-
 const Button: FC<{
   onClick: MouseEventHandler
   children: ReactNode

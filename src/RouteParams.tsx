@@ -105,6 +105,23 @@ export class RouteParams {
     }
   }
 
+  /**
+  Allows composition of different `path` routes together
+
+  ```javascript
+  const Page = () => {
+    const route = useRoute('[page]')
+    return <div>{route.path.page}</div>
+  }
+
+  const Books = () => {
+    const route = useRoute('books/[book]')
+    const { id } = route.path
+    // Creates nested route page will now use "/books/mybook/1"
+    return <div>{route.nest(<Page />)}</div>
+  }
+  ```
+  */
   nest(children: ReactNode): ReactNode {
     return (
       <RouterContext.Provider
@@ -152,11 +169,27 @@ export class RouteParams {
     return false
   }
 
+  /**
+  Get full location
+
+  ```javascript
+  <div>{route.location}</div>
+  ```
+  */
   get location(): string {
     this._usesLocation = true
     return this.rootCtx.location
   }
 
+  /**
+  Get all variables from path
+
+  ```javascript
+  const { book, page } = route.path
+
+  <div>{book} {page}</div>
+  ```
+  */
   get path(): { [key: string]: Value } {
     return this.parsedPath.length
       ? this._pathParams ||
@@ -169,16 +202,47 @@ export class RouteParams {
       : {}
   }
 
+  /**
+  Returns query parameters as an object, when used will also start to listen for changes
+
+  ```javascript
+  <div>{route.query.counter}</div>
+  ```
+   */
   get query(): QueryParams {
     this._usesQuery = true
     return this.rootCtx.query || {}
   }
 
+  /**
+  Returns location hash, when used start listening for changes
+
+  ```javascript
+  <div>{route.hash}</div>
+  ```
+   */
   get hash(): string {
     this._usesHash = true
     return this.rootCtx.hash
   }
 
+  /**
+  Update `path`
+
+  ```javascript
+  <div
+    onClick={() => {
+      // Will result in path "/book/mybook/1"
+      route.setPath({
+        book,
+        page: page + 1,
+      })
+    }}
+  >
+    {route.path.book} {route.path.page}
+  </div>
+  ```
+   */
   setPath(p: { [key: string]: Value }): boolean {
     if (deepEqual(this._pathParams, p)) {
       return false
@@ -251,6 +315,22 @@ export class RouteParams {
     return this.setLocation(newLocation)
   }
 
+  /**
+  Use query parameters, set a param to `null` to clear, pass `{ overwrite: true }` as option to overwrite current query params, default is merge
+
+  ```javascript
+  <div
+    onClick={() => {
+      // Merges by default
+      route.setQuery({
+        counter: route.query.counter + 1,
+      })
+    }}
+  >
+    {route.query.counter}
+  </div>
+  ```
+   */
   setQuery(query: QueryParams, opts?: { overwrite?: boolean }): boolean {
     if (query === null) {
       this.rootCtx.query = {}
@@ -279,6 +359,17 @@ export class RouteParams {
     return true
   }
 
+  /**
+  Modify the location hash
+
+  ```javascript
+  <div
+    onClick={() => {
+      route.setHash(route.hash + 1)
+    }}
+  >{route.hash}</div>  
+  ```
+   */
   setHash(hash: string): boolean {
     if (hash === this.rootCtx.hash) {
       return false
@@ -295,6 +386,13 @@ export class RouteParams {
     return true
   }
 
+  /**
+  Modify the whole `location`
+
+  ```javascript
+  <div onClick={() => route.setLocation('/something')}>{route.location}</div>
+  ``` 
+*/
   setLocation(location: string): boolean {
     if (location === this.rootCtx.location) {
       return false

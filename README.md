@@ -30,7 +30,7 @@ const Books = () => {
 
 ## Nested paths
 
-Allows composition of different and path routes together
+Allows composition of different path routes together
 
 ```javascript
 import { useRoute } from 'kabouter'
@@ -50,7 +50,7 @@ const Books = () => {
 
 ## Query parameters
 
-Use query paramets, set a parm to `null` to clear, pass `{ overwrite: true }` as option to overwrite current query params, default is merge
+Use query parameters, set a param to `null` to clear, pass `{ overwrite: true }` as option to overwrite current query params, default is merge
 
 ```javascript
 import { useRoute } from 'kabouter'
@@ -60,7 +60,7 @@ const Counter = () => {
   return (
     <div
       onClick={() => {
-        // merges by default
+        // Merges by default
         route.setQuery({
           counter: route.query.counter + 1,
         })
@@ -74,7 +74,7 @@ const Counter = () => {
 
 ## Hash
 
-Listen and modify the location hash
+Listen and modify the location `hash`
 
 ```javascript
 import { useRoute } from 'kabouter'
@@ -95,7 +95,7 @@ const Counter = () => {
 
 ## Location
 
-Listens and modify the whole location
+Listens and modify the whole `location`
 
 ```javascript
 import { useRoute } from 'kabouter'
