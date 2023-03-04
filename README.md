@@ -1,6 +1,6 @@
 # kabouter
 
-A minimalist, batteries included router for react 🍀
+A minimalist ~(2.7kb gzipped), batteries included router for react 🍀
 
 ## Path with variables
 

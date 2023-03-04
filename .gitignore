@@ -110,3 +110,5 @@ typings/
 .tern-port
 
 dist
+
+bundle.js

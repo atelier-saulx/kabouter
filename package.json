@@ -7,7 +7,8 @@
     "watch": "npx tsc --watch",
     "test": "npx ava --verbose",
     "test-browser": "npx aristotle watch -t test/browser/index.tsx -p 3010",
-    "build-browser": "npx aristotle build -t test/browser/index.tsx -d test/browser/dist"
+    "build-browser": "npx aristotle build -t test/browser/index.tsx -d test/browser/dist",
+    "build-bundle": "npx esbuild ./src/index.ts --external:react --external:@saulx/utils --external:@saulx/hash --bundle --outfile=bundle.js --minify"
   },
   "repository": "https://github.com/atelier-saulx/kabouter",
   "lint-staged": {
@@ -41,7 +42,6 @@
     "extends": "@saulx/eslint-config"
   },
   "dependencies": {
-    "@saulx/hash": "^2.0.0",
     "@saulx/utils": "^3.2.1"
   },
   "devDependencies": {
