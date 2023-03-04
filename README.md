@@ -128,3 +128,40 @@ const Counter = () => {
   )
 }
 ```
+
+## SSR
+
+Example how to use kabouter on a server
+
+```javascript
+import React from 'react'
+import { renderToPipeableStream } from 'react-dom/server'
+import { useRoute, Router } from 'kabouter'
+
+const Books = () => {
+  const route = useRoute('books/[book]/[page]')
+  const { book, page } = route.path
+  return (
+    <div
+      onClick={() => {
+        // Will result in path "/book/mybook/1"
+        route.setPath({
+          book,
+          page: page + 1,
+        })
+      }}
+    >
+      {book} {page}
+    </div>
+  )
+}
+
+const serve = (response) => {
+  renderToPipeableStream(
+    <Router location={{ path: '/books/book1/20' }}>
+      <Books />
+    </Router>
+    {}
+  ).pipe(response)
+}
+```

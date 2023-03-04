@@ -18,15 +18,15 @@ const parseLocation = (q: string, hash: string, pathName: string): string => {
 export const useRouterListeners = (
   path: string = '',
   location: Location = {
-    pathName: isBrowser ? window.location.pathname : '',
+    path: isBrowser ? window.location.pathname : '',
     query: isBrowser ? window.location.search.substring(1) : undefined,
     hash: isBrowser ? window.location.hash : undefined,
   }
 ): RouterRootCtx => {
   const routes = useMemo(() => {
-    const { pathName, query, hash } = location
+    const { path, query, hash } = location
     const componentMap: ComponentMap = new Map()
-    const parsedLocation = parseLocation(query, hash, pathName)
+    const parsedLocation = parseLocation(query, hash, path)
     const ctx: RouterRootCtx = {
       isRoot: true,
       componentMap,
@@ -34,7 +34,7 @@ export const useRouterListeners = (
       queryChanged: false,
       pathChanged: false,
       hash,
-      pathName,
+      pathName: path,
       query: query ? parseQuery(query) || {} : {},
       location: parsedLocation,
       updateRoute: (fromPopState) => {

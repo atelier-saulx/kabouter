@@ -44,7 +44,7 @@ export type RouterRootCtx = {
 export type Location = {
   hash?: string
   query?: string
-  pathName: string
+  path: string
 }
 
 export type RouteChildCtx = {

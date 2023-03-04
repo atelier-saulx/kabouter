@@ -146,7 +146,7 @@ export const RouterExample: FC<{ location?: string }> = ({ location }) => {
         location={
           location
             ? {
-                pathName: location.split('?')[0],
+                path: location.split('?')[0],
                 query: location.split('?')[1],
               }
             : undefined
