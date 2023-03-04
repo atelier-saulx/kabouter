@@ -24,9 +24,10 @@ export const useRouterListeners = (
   }
 ): RouterRootCtx => {
   const routes = useMemo(() => {
-    const { path, query, hash } = location
+    const { path: pathName, query, hash } = location
+
     const componentMap: ComponentMap = new Map()
-    const parsedLocation = parseLocation(query, hash, path)
+    const parsedLocation = parseLocation(query, hash, pathName)
     const ctx: RouterRootCtx = {
       isRoot: true,
       componentMap,
@@ -34,7 +35,7 @@ export const useRouterListeners = (
       queryChanged: false,
       pathChanged: false,
       hash,
-      pathName: path,
+      pathName,
       query: query ? parseQuery(query) || {} : {},
       location: parsedLocation,
       updateRoute: (fromPopState) => {
