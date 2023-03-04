@@ -7,74 +7,30 @@ import {
   RouterCtx,
   Value,
   RouterRootCtx,
+  PathSegment,
 } from './types'
-
-const parseRoute = (
-  rootCtx: RouterRootCtx,
-  fromPath: string[],
-  path: { vars: string[]; matcher: RegExp }[],
-  start: number
-): PathParams => {
-  const params = {}
-  const segs = rootCtx.pathName.split('/')
-  for (let i = 0; i < path.length + start + 1; i++) {
-    if (i > start) {
-      const seg = segs[i]
-      const { vars, matcher } = path[i - start - 1]
-      if (seg) {
-        const pSeg = segs[i].match(matcher)
-        if (pSeg) {
-          for (let x = 1; x < pSeg.length; x++) {
-            if (pSeg[x] === '*' || pSeg[x] === undefined) {
-              params[vars[x - 1]] = undefined
-            } else {
-              params[vars[x - 1]] = pSeg[x]
-            }
-          }
-        } else {
-          return {}
-        }
-      }
-    } else {
-      const x = fromPath[i].replace(/\[.+\]/, '')
-      if (x !== segs[i]) {
-        return {}
-      }
-    }
-  }
-  return params
-}
-
-const parseLocation = (q: string, hash: string, pathName: string): string => {
-  return q && hash
-    ? pathName + '?' + q + '#' + hash
-    : q
-    ? pathName + '?' + q
-    : hash
-    ? pathName + '#' + hash
-    : pathName
-}
-
-const matchVars = /\[.*?\]/g
+import { parseLocation, parseRoute } from './parseRoute'
+import { parsePath } from './preparePath'
 
 export class RouteParams {
   public start: number
   public ctx: RouterCtx
   public rootCtx: RouterRootCtx
-  public parsedPath: { vars: string[]; matcher: RegExp; seg: string }[]
 
-  private _pathParams?: PathParams
   private _usesQuery: boolean
   private _usesLocation: boolean
   private _usesHash: boolean
-  private _path: string[]
-  private _fromPath: string[]
+
+  // step 1
+  private _pathParams?: PathParams
+  private _fromPath: PathSegment[]
+  public preparedPath: PathSegment[]
 
   constructor(
     ctx: RouterCtx,
     rootCtx: RouterRootCtx,
     start: number,
-    fromPath: string[],
+    fromPath: PathSegment[],
     path?: string
   ) {
     this.ctx = ctx
@@ -83,26 +39,11 @@ export class RouteParams {
     this._fromPath = fromPath
 
     if (!path) {
-      this._path = []
-      this.parsedPath = []
+      this.preparedPath = []
       return this
     }
 
-    const p = path.split('/')
-
-    this._path = p
-
-    this.parsedPath = []
-    for (const seg of p) {
-      const matchers = seg.match(matchVars)
-      const matcher = new RegExp(seg.replace(matchVars, '(.+)'))
-      const vars = matchers ? matchers.map((v) => v.slice(1, -1)) : []
-      this.parsedPath.push({
-        vars,
-        matcher,
-        seg,
-      })
-    }
+    this.preparedPath = parsePath(path)
   }
 
   /**
@@ -126,7 +67,7 @@ export class RouteParams {
     return (
       <RouterContext.Provider
         value={{
-          path: this._path,
+          path: this.preparedPath,
           parent: this.ctx,
           children: [],
           isRoot: false,
@@ -142,11 +83,11 @@ export class RouteParams {
       return true
     }
 
-    if (this.parsedPath.length && this.rootCtx.pathChanged) {
+    if (this.preparedPath.length && this.rootCtx.pathChanged) {
       const nParams = parseRoute(
         this.rootCtx,
         this._fromPath,
-        this.parsedPath,
+        this.preparedPath,
         this.start
       )
 
@@ -191,12 +132,12 @@ export class RouteParams {
   ```
   */
   get path(): { [key: string]: Value } {
-    return this.parsedPath.length
+    return this.preparedPath.length
       ? this._pathParams ||
           (this._pathParams = parseRoute(
             this.rootCtx,
             this._fromPath,
-            this.parsedPath,
+            this.preparedPath,
             this.start
           ))
       : {}
@@ -249,8 +190,8 @@ export class RouteParams {
     }
 
     const results: Map<number, [string, Set<string>]> = new Map()
-    for (let i = this.parsedPath.length - 1; i > -1; i--) {
-      const parsed = this.parsedPath[i]
+    for (let i = this.preparedPath.length - 1; i > -1; i--) {
+      const parsed = this.preparedPath[i]
       for (const key in p) {
         if (parsed.vars.includes(key)) {
           if (!results.has(i)) {
@@ -278,17 +219,17 @@ export class RouteParams {
     const newPath = []
 
     for (let i = 0; i < this._fromPath.length; i++) {
-      const y = this._fromPath[i].replace(/\[.+\]/, '')
-      if (y !== x[i]) {
-        newPath.push(y)
+      const from = this._fromPath[i]
+      if (!from.matcher.test(x[i])) {
+        newPath.push(from.noVar)
       } else {
         newPath.push(x[i])
       }
     }
 
-    // make all thwse replaces perpared
-    for (let i = 0; i < this._path.length; i++) {
-      newPath.push(this._path[i].replace(/\[.+\]/, ''))
+    // Make all these replaces perpared
+    for (let i = 0; i < this.preparedPath.length; i++) {
+      newPath.push(this.preparedPath[i].noVar)
     }
 
     results.forEach((v, k) => {
@@ -306,7 +247,7 @@ export class RouteParams {
               ? '*'
               : ''
             : typeof v === 'object'
-            ? JSON.stringify(v)
+            ? encodeURIComponent(JSON.stringify(v))
             : v
         )
         .join('/')

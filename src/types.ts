@@ -8,18 +8,25 @@ export type Value = string | number | boolean
 
 export type PathParams = { [key: string]: Value }
 
+export type PathSegment = {
+  vars: string[]
+  matcher: RegExp
+  seg: string
+  noVar: string
+}
+
 export type ComponentMap = Map<
   any,
   {
     start: number
-    path: { vars: string[]; matcher: RegExp; seg: string }[]
+    path: PathSegment[]
     update: () => void
   }
 >
 
 export type RouterRootCtx = {
   isRoot: true
-  path: string[]
+  path: PathSegment[]
   updateRoute: (fromPopState: boolean) => void
   pathName: string
   query: QueryParams
@@ -34,9 +41,15 @@ export type RouterRootCtx = {
   componentMap: ComponentMap
 }
 
+export type Location = {
+  hash?: string
+  query?: string
+  pathName: string
+}
+
 export type RouteChildCtx = {
   isRoot: false
-  path: string[]
+  path: PathSegment[]
   parent?: RouterCtx
   children: RouterCtx[]
 }

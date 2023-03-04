@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { parseQuery } from '@saulx/utils'
-import { ComponentMap, RouterRootCtx } from './types'
+import { ComponentMap, RouterRootCtx, Location } from './types'
+import { parsePath } from './preparePath'
 
 const isBrowser = typeof window !== 'undefined'
 
@@ -14,17 +15,18 @@ const parseLocation = (q: string, hash: string, pathName: string): string => {
     : pathName
 }
 
-export const useRouterListeners = (path: string = ''): RouterRootCtx => {
+export const useRouterListeners = (
+  path: string = '',
+  location: Location = {
+    pathName: isBrowser ? window.location.pathname : '',
+    query: isBrowser ? window.location.search.substring(1) : undefined,
+    hash: isBrowser ? window.location.hash : undefined,
+  }
+): RouterRootCtx => {
   const routes = useMemo(() => {
-    // TODO: fix for server side
-    const p = path.split('/')
-    const pathName = window.location.pathname
-    const q = window.location.search.substring(1)
-    const hash = window.location.hash
+    const { pathName, query, hash } = location
     const componentMap: ComponentMap = new Map()
-
-    const location = parseLocation(q, hash, pathName)
-
+    const parsedLocation = parseLocation(query, hash, pathName)
     const ctx: RouterRootCtx = {
       isRoot: true,
       componentMap,
@@ -33,8 +35,8 @@ export const useRouterListeners = (path: string = ''): RouterRootCtx => {
       pathChanged: false,
       hash,
       pathName,
-      query: q ? parseQuery(q) || {} : {},
-      location,
+      query: query ? parseQuery(query) || {} : {},
+      location: parsedLocation,
       updateRoute: (fromPopState) => {
         const ordered = [...componentMap.values()].sort((a, b) => {
           return a.start < b.start ? -1 : a.start === b.start ? 0 : 1
@@ -50,7 +52,7 @@ export const useRouterListeners = (path: string = ''): RouterRootCtx => {
         }
       },
       children: [],
-      path: p,
+      path: parsePath(path),
     }
     return ctx
   }, [path])
@@ -87,7 +89,6 @@ export const useRouterListeners = (path: string = ''): RouterRootCtx => {
         global.removeEventListener('popstate', listener)
       }
     }
-    // Add path option in router  / here
     return () => {}
   }, [path])
 

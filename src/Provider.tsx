@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, FC } from 'react'
-import { RouterCtx, RouterRootCtx } from './types'
+import { RouterCtx, RouterRootCtx, Location } from './types'
 import { useRouterListeners } from './useRouterListeners'
 
 export const RouterContext = createContext<RouterCtx>({
@@ -13,9 +13,10 @@ export const Router: FC<{
   children: ReactNode
   routes?: RouterRootCtx
   path?: string
-}> = ({ children, routes, path = '' }) => {
+  location?: Location
+}> = ({ children, routes, path = '', location }) => {
   if (!routes) {
-    routes = useRouterListeners(path)
+    routes = useRouterListeners(path, location)
   }
   return (
     <RouterContext.Provider value={routes}>{children}</RouterContext.Provider>
