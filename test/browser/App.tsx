@@ -104,8 +104,6 @@ const RouteWrapper = ({ children, id }) => {
 }
 
 const SimpleRoute = ({ id }) => {
-  console.info('RENDER SIMPLE ROUTE', id)
-
   const route = useRoute(`${id}-[flap]/[snur]/[snapje]/[bla]`)
   return (
     <div

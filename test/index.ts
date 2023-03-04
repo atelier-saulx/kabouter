@@ -11,7 +11,6 @@ test('path', async (t) => {
   const path = join(__dirname, 'tmp')
   await fs.rm(join(path, 'index.html')).catch(() => {})
   await fs.mkdir(path).catch(() => {})
-
   const writeHandler = createWriteStream(join(path, 'index.html'))
 
   renderToPipeableStream(
@@ -22,7 +21,10 @@ test('path', async (t) => {
     {}
   ).pipe(writeHandler)
 
-  await wait(1000)
+  await wait(100)
 
-  t.is(1, 1)
+  const file = await fs.readFile(join(path, 'index.html'))
+
+  t.true(file.includes('466032'))
+  t.true(file.includes('172'))
 })
