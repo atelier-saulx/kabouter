@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, FC } from 'react'
 import { RouterCtx, RouterRootCtx } from './types'
-import { useRouterListeners } from './index'
+import { useRouterListeners } from './useRouterListeners'
 
 export const RouterContext = createContext<RouterCtx>({
   path: [],
@@ -8,12 +8,14 @@ export const RouterContext = createContext<RouterCtx>({
   isRoot: false,
 })
 
+// Replace with top level hook (the first)
 export const Router: FC<{
   children: ReactNode
   routes?: RouterRootCtx
-}> = ({ children, routes }) => {
+  path?: string
+}> = ({ children, routes, path = '' }) => {
   if (!routes) {
-    routes = useRouterListeners()
+    routes = useRouterListeners(path)
   }
   return (
     <RouterContext.Provider value={routes}>{children}</RouterContext.Provider>

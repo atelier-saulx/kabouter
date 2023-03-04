@@ -30,7 +30,7 @@ const Books = () => {
 
 ## Nested paths
 
-Allows composition of different path routes together
+Allows composition of different `path` routes together
 
 ```javascript
 import { useRoute } from 'kabouter'
