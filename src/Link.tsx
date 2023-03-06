@@ -27,6 +27,10 @@ type LinkProps = {
       >
 */
 
+// needs an extra feature from useRoute (can also be a simpler hook)
+// setStringPath()
+// link also needs access to context
+
 export const Link: FC<LinkProps> = styled(
   ({ href = '/', onClick, ...props }) => {
     const route = useRoute('/')
