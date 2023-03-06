@@ -42,6 +42,7 @@
     "extends": "@saulx/eslint-config"
   },
   "dependencies": {
+    "inlines": "^0.2.2",
     "@saulx/utils": "^3.2.1"
   },
   "devDependencies": {
