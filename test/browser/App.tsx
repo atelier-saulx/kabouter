@@ -5,7 +5,7 @@ import React, {
   ReactNode,
   useState,
 } from 'react'
-import { useRoute, Router, useSearchParam } from '../../src'
+import { useRoute, Router, useSearchParam, Link } from '../../src'
 
 const Button: FC<{
   onClick: MouseEventHandler
@@ -97,7 +97,26 @@ const RouteWrapper = ({ children, id }) => {
           paddingLeft: 24,
         }}
       >
-        {route.nest(children)}
+        {route.nest(
+          <div>
+            {children}
+
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <Link path={{ bla: Math.random() * 1000 }}>SET THIS LINK!</Link>
+              <Link query={{ x: Math.random() * 1000 }}>
+                SET THIS LINK QUERY (x)
+              </Link>
+              <Link hash="blabla">SET THIS LINK HASH</Link>
+              <Link
+                query={{ x: Math.random() * 1000 }}
+                hash="snup"
+                path={{ bla: Math.random() * 1000 }}
+              >
+                SET ALL
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

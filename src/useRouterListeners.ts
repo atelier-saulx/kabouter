@@ -40,7 +40,11 @@ export const useRouterListeners = (
       location: parsedLocation,
       updateRoute: (fromPopState) => {
         const ordered = [...componentMap.values()].sort((a, b) => {
-          return a.start < b.start ? -1 : a.start === b.start ? 0 : 1
+          return a.route.start < b.route.start
+            ? -1
+            : a.route.start === b.route.start
+            ? 0
+            : 1
         })
         ordered.forEach((v) => {
           v.update()
