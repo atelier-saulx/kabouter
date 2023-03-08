@@ -1,11 +1,10 @@
 import { useCallback, useContext, useEffect, useMemo } from 'react'
 import { useUpdate } from './useUpdate'
-import { RouterContext, Router } from './Provider'
+import { RouterContext } from './Provider'
 import { PathSegment, RouterRootCtx } from './types'
 import { RouteParams } from './RouteParams'
-export { Router }
 
-let routeId = 0
+let routeId = 1
 
 /**
 Hook to listen to and update `location`
@@ -28,7 +27,6 @@ Hook to listen to and update `location`
 ```
 */
 export const useRoute = (path?: string): RouteParams => {
-  // TODO: add optional rootPath for the root, and curent path for server
   const ctx = useContext(RouterContext)
 
   let parent = ctx
@@ -61,8 +59,7 @@ export const useRoute = (path?: string): RouteParams => {
   }, [])
 
   rootCtx.componentMap.set(id, {
-    path: routeParams.preparedPath,
-    start: routeParams.start,
+    route: routeParams,
     update: useCallback(() => {
       if (routeParams.update()) {
         update()

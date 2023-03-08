@@ -165,3 +165,29 @@ const serve = (response) => {
   ).pipe(response)
 }
 ```
+
+## Link component
+
+Link element supports all set functionality of useRoute, creates an `<a>` tag with the parsed url.
+Attaches to the closest `route.nest()`
+
+```javascript
+import React from 'react'
+import { renderToPipeableStream } from 'react-dom/server'
+import { useRoute, Router } from 'kabouter'
+
+const Page = () => {
+  return (
+    <div>
+      <Link path={{ book: 'a book' }}>Go to bla!</Link>
+    </div>
+  )
+}
+
+const Books = () => {
+  const route = useRoute('books/[book]')
+  const { id } = route.path
+  // Creates nested route page will now use "/books/mybook/1"
+  return <div>{route.nest(<Page />)}</div>
+}
+```

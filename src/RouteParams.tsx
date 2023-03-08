@@ -67,6 +67,7 @@ export class RouteParams {
     return (
       <RouterContext.Provider
         value={{
+          route: this,
           path: this.preparedPath,
           parent: this.ctx,
           children: [],
@@ -188,71 +189,7 @@ export class RouteParams {
     if (deepEqual(this._pathParams, p)) {
       return false
     }
-
-    const results: Map<number, [string, Set<string>]> = new Map()
-    for (let i = this.preparedPath.length - 1; i > -1; i--) {
-      const parsed = this.preparedPath[i]
-      for (const key in p) {
-        if (parsed.vars.includes(key)) {
-          if (!results.has(i)) {
-            results.set(i, [parsed.seg, new Set()])
-          }
-          const r = results.get(i)
-          r[0] = r[0].replaceAll(`[${key}]`, String(p[key]))
-          r[1].add(key)
-        }
-      }
-      if (results.has(i)) {
-        const r = results.get(i)
-        for (const v of parsed.vars) {
-          if (!r[1].has(v)) {
-            r[0] = r[0].replaceAll(`[${v}]`, String(this._pathParams[v] || ''))
-          }
-        }
-      }
-    }
-    const [s, hash = ''] = this.rootCtx.location.split('#')
-
-    const [pathName, q] = s.split('?')
-    const x = pathName.split('/')
-
-    const newPath = []
-
-    for (let i = 0; i < this._fromPath.length; i++) {
-      const from = this._fromPath[i]
-      if (!from.matcher.test(x[i])) {
-        newPath.push(from.noVar)
-      } else {
-        newPath.push(x[i])
-      }
-    }
-
-    // Make all these replaces perpared
-    for (let i = 0; i < this.preparedPath.length; i++) {
-      newPath.push(this.preparedPath[i].noVar)
-    }
-
-    results.forEach((v, k) => {
-      const newIndex = k + this.start + 1
-      newPath[newIndex] = v[0]
-    })
-
-    const newLocation = parseLocation(
-      q,
-      hash,
-      newPath
-        .map((v, i) =>
-          v === undefined || v === ''
-            ? i > 0
-              ? '*'
-              : ''
-            : typeof v === 'object'
-            ? encodeURIComponent(JSON.stringify(v))
-            : v
-        )
-        .join('/')
-    )
-
+    const newLocation = this.parseLocation(p)
     return this.setLocation(newLocation)
   }
 
@@ -348,5 +285,73 @@ export class RouteParams {
     this.rootCtx.pathChanged = true
     this.rootCtx.updateRoute(false)
     return true
+  }
+
+  parseLocation(p: { [key: string]: Value }): string {
+    const results: Map<number, [string, Set<string>]> = new Map()
+    for (let i = this.preparedPath.length - 1; i > -1; i--) {
+      const parsed = this.preparedPath[i]
+      for (const key in p) {
+        if (parsed.vars.includes(key)) {
+          if (!results.has(i)) {
+            results.set(i, [parsed.seg, new Set()])
+          }
+          const r = results.get(i)
+          r[0] = r[0].replaceAll(`[${key}]`, String(p[key]))
+          r[1].add(key)
+        }
+      }
+      if (results.has(i)) {
+        const r = results.get(i)
+        for (const v of parsed.vars) {
+          if (!r[1].has(v)) {
+            r[0] = r[0].replaceAll(`[${v}]`, String(this._pathParams[v] || ''))
+          }
+        }
+      }
+    }
+    const [s, hash = ''] = this.rootCtx.location.split('#')
+
+    const [pathName, q] = s.split('?')
+    const x = pathName.split('/')
+
+    const newPath = []
+
+    for (let i = 0; i < this._fromPath.length; i++) {
+      const from = this._fromPath[i]
+      if (!from.matcher.test(x[i])) {
+        newPath.push(from.noVar)
+      } else {
+        newPath.push(x[i])
+      }
+    }
+
+    // Make all these replaces perpared
+    for (let i = 0; i < this.preparedPath.length; i++) {
+      newPath.push(this.preparedPath[i].noVar)
+    }
+
+    results.forEach((v, k) => {
+      const newIndex = k + this.start + 1
+      newPath[newIndex] = v[0]
+    })
+
+    const newLocation = parseLocation(
+      q,
+      hash,
+      newPath
+        .map((v, i) =>
+          v === undefined || v === ''
+            ? i > 0
+              ? '*'
+              : ''
+            : typeof v === 'object'
+            ? encodeURIComponent(JSON.stringify(v))
+            : v
+        )
+        .join('/')
+    )
+
+    return newLocation
   }
 }

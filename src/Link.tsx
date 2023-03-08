@@ -1,59 +1,80 @@
-import React, { FC, ReactNode, CSSProperties, MouseEventHandler } from 'react'
-import { Style, styled } from 'inlines'
-import { useRoute } from './useRoute'
+import React, {
+  FC,
+  ReactNode,
+  CSSProperties,
+  useContext,
+  MouseEventHandler,
+  useMemo,
+  useCallback,
+} from 'react'
+import { PathParams, QueryParams } from './types'
+import { RouterContext } from './Provider'
+import { serializeQuery } from '@saulx/utils'
 
 type LinkProps = {
-  href?: string
   children?: ReactNode
-  style?: CSSProperties | Style
+  path?: PathParams
+  query?: QueryParams
+  href?: string
+  hash?: string
+  location?: string
+  style?: CSSProperties
   onClick?: MouseEventHandler<HTMLAnchorElement>
 }
-/*
- <a
-        href={parsedHref}
-        onClick={
-          parsedHref.includes('?')
-            ? (e) => {
-                dispatchEvent(new Event('popstate'))
-                onClick?.(e)
-              }
-            : parsedHref.includes('#')
-            ? (e) => {
-                dispatchEvent(new HashChangeEvent('hashchange'))
-                onClick?.(e)
-              }
-            : onClick
-        }
-      >
+
+/**
+Link element supports all set functionality of useRoute, creates an `<a>` tag with the parsed url.
+Attaches to the closest `route.nest()`
+
+```javascript
+    <Link
+      path={{ bla: true }}
+    >
+      Go to bla!
+    </Link>
+```
 */
+export const Link: FC<LinkProps> = ({
+  onClick,
+  path,
+  query,
+  hash,
+  href,
+  ...props
+}) => {
+  const ctx = useContext(RouterContext)
 
-// needs an extra feature from useRoute (can also be a simpler hook)
-// setStringPath()
-// link also needs access to context
+  const hrefParsed = useMemo(() => {
+    if (href) {
+      return href
+    }
 
-export const Link: FC<LinkProps> = styled(
-  ({ href = '/', onClick, ...props }) => {
-    const route = useRoute('/')
+    let link = '/'
 
-    // const parsedHref = parseHref(href)
+    if (path && ctx.route) {
+      const loc = ctx.route.parseLocation(path)
+      link = loc
+    }
 
-    const wrappedOnClick: MouseEventHandler<HTMLAnchorElement> = onClick
-      ? (e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          route.setPath({})
-          onClick(e)
-        }
-      : (e) => {
-          e.preventDefault()
-          e.stopPropagation()
-        }
+    const qP = query ? '?' + serializeQuery(query) : ''
+    const hP = hash ? '#' + hash : ''
 
-    return <a href={href} onClick={wrappedOnClick} {...props} />
-  },
-  {
-    display: 'block',
-    color: 'inherit',
-    textDecoration: 'none',
-  }
-)
+    return link + hP + qP
+  }, [path, query, hash, href])
+
+  const wrappedOnClick: MouseEventHandler<HTMLAnchorElement> = useCallback(
+    (e) => {
+      if (onClick) {
+        onClick(e)
+      }
+      if (!hrefParsed.startsWith('http')) {
+        e.preventDefault()
+        e.stopPropagation()
+        ctx.route?.setLocation(hrefParsed)
+      }
+    },
+    [hrefParsed]
+  )
+
+  return <a href={hrefParsed} onClick={wrappedOnClick} {...props} />
+}

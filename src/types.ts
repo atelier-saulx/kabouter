@@ -1,3 +1,5 @@
+import { RouteParams } from './RouteParams'
+
 export type QueryValue = string | number | boolean
 
 export type QueryParams = {
@@ -18,8 +20,7 @@ export type PathSegment = {
 export type ComponentMap = Map<
   any,
   {
-    start: number
-    path: PathSegment[]
+    route: RouteParams
     update: () => void
   }
 >
@@ -33,6 +34,7 @@ export type RouterRootCtx = {
   queryString?: string
   hash?: string
   location?: string
+  route?: RouteParams
   queryChanged: boolean
   hashChanged: boolean
   pathChanged: boolean
@@ -50,6 +52,7 @@ export type Location = {
 export type RouteChildCtx = {
   isRoot: false
   path: PathSegment[]
+  route?: RouteParams
   parent?: RouterCtx
   children: RouterCtx[]
 }
