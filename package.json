@@ -1,6 +1,6 @@
 {
   "name": "kabouter",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "main": "./dist/index.js",
   "scripts": {
     "build": "npx tsc",
@@ -35,7 +35,7 @@
     ]
   },
   "peerDependencies": {
-    "react": "18.x.x||19.x.x"
+    "react": "18||19"
   },
   "prettier": "@saulx/prettier-config",
   "eslintConfig": {
