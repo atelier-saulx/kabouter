@@ -171,6 +171,7 @@ export const RouterExample: FC<{ location?: string }> = ({ location }) => {
             : undefined
         }
       >
+        <Link href="/blablabla">BLA LINK!</Link>
         <Button
           onClick={() => {
             set(!s)
