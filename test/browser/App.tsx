@@ -157,6 +157,11 @@ const SimpleRoute = ({ id }) => {
   )
 }
 
+const QueryComponent = () => {
+  const q = useRoute().query
+  return <pre>Q PARAM - {JSON.stringify(q)}</pre>
+}
+
 export const RouterExample: FC<{ location?: string }> = ({ location }) => {
   const [s, set] = useState(true)
   return (
@@ -171,6 +176,9 @@ export const RouterExample: FC<{ location?: string }> = ({ location }) => {
             : undefined
         }
       >
+        <QueryComponent />
+        <Link href="/?bla=bla">QS LINK!</Link>
+        <div />
         <Link href="/blablabla">BLA LINK!</Link>
         <Button
           onClick={() => {

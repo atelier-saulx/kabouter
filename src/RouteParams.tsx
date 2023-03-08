@@ -279,10 +279,25 @@ export class RouteParams {
     const [s, hash = ''] = location.split('#')
     const [pathName, q] = s.split('?')
     this.rootCtx.hash = hash
+
+    const nQ = q ? parseQuery(q) || {} : {}
+
+    if (pathName !== this.rootCtx.pathName) {
+      this.rootCtx.pathChanged = true
+    }
+
+    if (!deepEqual(nQ, this.rootCtx.query)) {
+      this.rootCtx.queryChanged = true
+    }
+
+    if (hash !== this.rootCtx.hash) {
+      this.rootCtx.hashChanged = true
+    }
+
     this.rootCtx.pathName = pathName
-    this.rootCtx.query = q ? parseQuery(q) || {} : {}
+    this.rootCtx.query = nQ
+    this.rootCtx.hash = hash
     this.rootCtx.location = location
-    this.rootCtx.pathChanged = true
     this.rootCtx.updateRoute(false)
     return true
   }
