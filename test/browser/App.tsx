@@ -5,6 +5,7 @@ import React, {
   ReactNode,
   useState,
 } from 'react'
+import { Color } from './Color'
 import { useRoute, Router, useSearchParam, Link } from '../../src'
 
 const Button: FC<{
@@ -178,6 +179,8 @@ export const RouterExample: FC<{ location?: string }> = ({ location }) => {
       >
         <QueryComponent />
         <Link href="/?bla=bla">QS LINK!</Link>
+        <Link href="/?bla=no">QS LINK!</Link>
+
         <div />
         <Link href="/blablabla">BLA LINK!</Link>
         <Button
@@ -201,7 +204,9 @@ export const RouterExample: FC<{ location?: string }> = ({ location }) => {
             </RouteWrapper>
             <Page />
           </>
-        ) : null}
+        ) : (
+          <Color />
+        )}
       </Router>
     </div>
   )
