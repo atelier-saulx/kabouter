@@ -1,6 +1,7 @@
 import React, { createContext, ReactNode, FC } from 'react'
 import { RouterCtx, RouterRootCtx, Location } from './types'
 import { useRouterListeners } from './useRouterListeners'
+import { useRoute } from './useRoute'
 
 export const RouterContext = createContext<RouterCtx>({
   path: [],
@@ -9,7 +10,8 @@ export const RouterContext = createContext<RouterCtx>({
 })
 
 const TopRouteWrapper: FC<{ children: ReactNode }> = ({ children }) => {
-  return <>{children}</>
+  const r = useRoute()
+  return <>{r.nest(children)}</>
 }
 
 // Replace with top level hook (the first)

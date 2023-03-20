@@ -22,6 +22,8 @@ type LinkProps = {
   onClick?: MouseEventHandler<HTMLAnchorElement>
 }
 
+console.log('fuck fuck')
+
 /**
 Link element supports all set functionality of useRoute, creates an `<a>` tag with the parsed url.
 Attaches to the closest `route.nest()`
@@ -67,6 +69,7 @@ export const Link: FC<LinkProps> = ({
       if (onClick) {
         onClick(e)
       }
+
       if (!hrefParsed.startsWith('http')) {
         e.preventDefault()
         e.stopPropagation()
