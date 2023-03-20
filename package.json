@@ -1,6 +1,6 @@
 {
   "name": "kabouter",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "main": "./dist/index.js",
   "scripts": {
     "build": "npx tsc",
