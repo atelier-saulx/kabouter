@@ -35,6 +35,8 @@ export const useRoute = (path?: string): RouteParams => {
   const fromPath: PathSegment[] = []
 
   while (parent && !rootCtx) {
+    // console.log('  PATH', parent)
+
     fromPath.unshift(...parent.path)
     if (parent.isRoot) {
       rootCtx = parent

@@ -1,7 +1,85 @@
-import React, { useState, ReactNode } from 'react'
-// lets add some routes here
+import React, { ReactNode } from 'react'
+import { useRoute } from '../../src'
+
+const NestLevel2Flap = () => {
+  const route = useRoute('[snur]')
+  return (
+    <div
+      style={{
+        marginTop: 24,
+        marginBottom: 24,
+      }}
+    >
+      <button
+        onClick={() => {
+          route.setPath({ snur: (~~(Math.random() * 1000)).toString(16) })
+        }}
+      >
+        SET SNUR
+      </button>
+    </div>
+  )
+}
+
+const Bla = () => {
+  return (
+    <>
+      <NestLevel2Flap />
+    </>
+  )
+}
+
+const NestLevel2 = () => {
+  const route = useRoute('[snur]')
+  return (
+    <div
+      style={{
+        padding: 24,
+        marginTop: 24,
+        marginBottom: 24,
+      }}
+    >
+      <button
+        onClick={() => {
+          route.setPath({ snur: (~~(Math.random() * 1000)).toString(16) })
+        }}
+      >
+        SET SNUR
+      </button>
+      --SNUR: {route.path.snur}
+      <Bla />
+    </div>
+  )
+}
+
+const NestLevel1 = () => {
+  const route = useRoute('[bla]')
+  return (
+    <div
+      style={{
+        padding: 24,
+        marginTop: 24,
+        marginBottom: 24,
+      }}
+    >
+      <button
+        onClick={() => {
+          route.setPath({ bla: (~~(Math.random() * 1000)).toString(16) })
+        }}
+      >
+        SET BLA
+      </button>
+      --BLA: {route.path.bla}
+      {route.nest(<NestLevel2 />)}
+    </div>
+  )
+}
 
 export const Color = () => {
+  const route = useRoute('[bg]')
+
+  const { bg = 'rgb(251, 248, 244)' } = route.path
+
   const colors = {
     bright: [255, 255, 255],
     whitwhite: [238, 239, 234],
@@ -43,19 +121,17 @@ export const Color = () => {
 
   const colorsE: ReactNode[] = []
 
-  const [bla, setBla] = useState('rgb(251, 248, 244)')
-
   for (const key in colors) {
     colorsE.push(
       <div
         key={key}
         onClick={() => {
-          setBla(`rgb(${colors[key].join(',')})`)
+          route.setPath({ bg: `rgb(${colors[key].join(',')})` })
         }}
         style={{
           fontFamily: 'andale mono',
           fontWeight:
-            `rgb(${colors[key].join(',')})` === bla ? 'bold' : undefined,
+            `rgb(${colors[key].join(',')})` === bg ? 'bold' : undefined,
           margin: 50,
           backgroundColor: `rgba(${colors[key][0]},${colors[key][1]},${colors[key][2]})`,
           width: 300,
@@ -88,16 +164,19 @@ export const Color = () => {
   }
 
   return (
-    <div
-      style={{
-        backgroundColor: bla,
-        width: '100vw',
-        minHeight: '100vh',
-        display: 'flex',
-        flexWrap: 'wrap',
-      }}
-    >
-      {colorsE}
-    </div>
+    <>
+      {route.nest(<NestLevel1 />)}
+      <div
+        style={{
+          backgroundColor: String(bg),
+          width: '100vw',
+          minHeight: '100vh',
+          display: 'flex',
+          flexWrap: 'wrap',
+        }}
+      >
+        {colorsE}
+      </div>
+    </>
   )
 }
