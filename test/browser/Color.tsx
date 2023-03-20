@@ -17,6 +17,22 @@ const NestLevel2Flap = () => {
       >
         SET SNUR
       </button>
+      <button
+        onClick={() => {
+          route.setLocation(
+            route.location.split('#')[0].split('?')[0] + '?#bla'
+          )
+        }}
+      >
+        SET hash
+      </button>
+      <button
+        onClick={() => {
+          route.setHash('EWDW')
+        }}
+      >
+        | SET hash 2
+      </button>
     </div>
   )
 }

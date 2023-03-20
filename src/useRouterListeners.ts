@@ -20,7 +20,10 @@ export const useRouterListeners = (
   location: Location = {
     path: isBrowser ? window.location.pathname : '',
     query: isBrowser ? window.location.search.substring(1) : undefined,
-    hash: isBrowser ? window.location.hash : undefined,
+    hash:
+      isBrowser && window.location.hash
+        ? window.location.hash.substring(1)
+        : undefined,
   }
 ): RouterRootCtx => {
   const routes = useMemo(() => {

@@ -45,6 +45,8 @@ export const parseLocation = (
   hash: string,
   pathName: string
 ): string => {
+  console.log('?????????????', q)
+
   return q && hash
     ? pathName + '?' + q + '#' + hash
     : q
