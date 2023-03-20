@@ -12,6 +12,15 @@ import {
 import { parseLocation, parseRoute } from './parseRoute'
 import { parsePath } from './preparePath'
 
+const parseVal = (v: string, i: number): string =>
+  v === undefined || v === ''
+    ? i > 0
+      ? '*'
+      : ''
+    : typeof v === 'object'
+    ? encodeURIComponent(JSON.stringify(v))
+    : v
+
 export class RouteParams {
   public start: number
   public ctx: RouterCtx
@@ -304,6 +313,8 @@ export class RouteParams {
 
   parseLocation(p: { [key: string]: Value }): string {
     const results: Map<number, [string, Set<string>]> = new Map()
+    let len = Object.keys(p).length
+
     for (let i = this.preparedPath.length - 1; i > -1; i--) {
       const parsed = this.preparedPath[i]
       for (const key in p) {
@@ -314,6 +325,10 @@ export class RouteParams {
           const r = results.get(i)
           r[0] = r[0].replaceAll(`[${key}]`, String(p[key]))
           r[1].add(key)
+          len--
+          if (len === 0) {
+            break
+          }
         }
       }
       if (results.has(i)) {
@@ -324,48 +339,71 @@ export class RouteParams {
           }
         }
       }
+      if (len === 0) {
+        break
+      }
     }
-    const [s, hash = ''] = this.rootCtx.location.split('#')
 
+    const [s, hash = ''] = this.rootCtx.location.split('#')
     const [pathName, q] = s.split('?')
     const x = pathName.split('/')
-
     const newPath = []
+
+    if (len) {
+      let parent = this.ctx.parent
+      while (parent) {
+        if (parent.path) {
+          for (let i = 0; i < parent.path.length; i++) {
+            const match = parent.path[i]
+            for (const k in p) {
+              if (match.vars.includes(k)) {
+                x[parent.route.start + i + 1] = String(p[k] || '')
+                len--
+                if (len === 0) {
+                  break
+                }
+              }
+            }
+            if (len === 0) {
+              break
+            }
+          }
+        }
+        if (len === 0) {
+          break
+        } else {
+          parent = parent.parent
+        }
+      }
+    }
 
     for (let i = 0; i < this._fromPath.length; i++) {
       const from = this._fromPath[i]
       if (!from.matcher.test(x[i])) {
         newPath.push(from.noVar)
       } else {
-        newPath.push(x[i])
+        newPath.push(parseVal(x[i], i))
       }
     }
 
-    // Make all these replaces perpared
     for (let i = 0; i < this.preparedPath.length; i++) {
       newPath.push(this.preparedPath[i].noVar)
     }
 
     results.forEach((v, k) => {
       const newIndex = k + this.start + 1
-      newPath[newIndex] = v[0]
+      newPath[newIndex] = parseVal(v[0], newIndex)
     })
 
-    const newLocation = parseLocation(
-      q,
-      hash,
-      newPath
-        .map((v, i) =>
-          v === undefined || v === ''
-            ? i > 0
-              ? '*'
-              : ''
-            : typeof v === 'object'
-            ? encodeURIComponent(JSON.stringify(v))
-            : v
-        )
-        .join('/')
-    )
+    for (let i = newPath.length - 1; i > -1; i--) {
+      if (newPath[i] === '*' || newPath[i] === '') {
+        newPath.pop()
+      } else {
+        break
+      }
+    }
+
+    const newLocation = parseLocation(q, hash, newPath.join('/'))
 
     return newLocation
   }

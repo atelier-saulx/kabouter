@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo } from 'react'
 import { useUpdate } from './useUpdate'
 import { RouterContext } from './Provider'
-import { PathSegment, RouterRootCtx } from './types'
+import { PathSegment, RouterRootCtx, Value } from './types'
 import { RouteParams } from './RouteParams'
 
 let routeId = 1
@@ -10,7 +10,7 @@ let routeId = 1
 Hook to listen to and update `location`
 
 ```javascript
-  const route = useRoute('books/[book]/[page]')
+  const route = useRoute('books/[book]/[page]', { book: 'default book!' })
   const { book, page } = route.path
 
   <div
@@ -26,7 +26,10 @@ Hook to listen to and update `location`
     </div>
 ```
 */
-export const useRoute = (path?: string): RouteParams => {
+export const useRoute = (
+  path?: string,
+  defaultValues?: { [key: string]: Value }
+): RouteParams => {
   const ctx = useContext(RouterContext)
 
   let parent = ctx
@@ -35,8 +38,6 @@ export const useRoute = (path?: string): RouteParams => {
   const fromPath: PathSegment[] = []
 
   while (parent && !rootCtx) {
-    // console.log('  PATH', parent)
-
     fromPath.unshift(...parent.path)
     if (parent.isRoot) {
       rootCtx = parent
@@ -51,6 +52,25 @@ export const useRoute = (path?: string): RouteParams => {
   const routeParams = useMemo(() => {
     return new RouteParams(ctx, rootCtx, start, fromPath, path)
   }, [path, start])
+
+  // use memo for faster effect then useeffect...
+  useMemo(() => {
+    if (defaultValues) {
+      const n = {}
+      let updateDefault = false
+      for (const k in defaultValues) {
+        if (routeParams.path[k] === undefined) {
+          // @ts-ignore
+          n[k] = routeParams._pathParams[k] = defaultValues[k]
+          updateDefault = true
+        }
+      }
+      if (updateDefault) {
+        rootCtx.location = routeParams.parseLocation(n)
+        rootCtx.updateRoute(false)
+      }
+    }
+  }, [path])
 
   const update = useUpdate()
 

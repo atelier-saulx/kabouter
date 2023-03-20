@@ -164,7 +164,7 @@ const QueryComponent = () => {
 }
 
 export const RouterExample: FC<{ location?: string }> = ({ location }) => {
-  const [s, set] = useState(true)
+  const [s, set] = useState(false)
   return (
     <div style={{ padding: 100 }}>
       <Router

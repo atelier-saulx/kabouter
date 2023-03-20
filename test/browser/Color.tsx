@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 import { useRoute } from '../../src'
 
 const NestLevel2Flap = () => {
-  const route = useRoute('[snur]')
+  const route = useRoute('[snur]', { snur: 'DEFAULT' })
   return (
     <div
       style={{
@@ -17,6 +17,20 @@ const NestLevel2Flap = () => {
       >
         SET SNUR
       </button>
+      <div
+        style={{
+          border: '10px solid black',
+        }}
+      >
+        <button
+          style={{ marginTop: 100 }}
+          onClick={() => {
+            route.setPath({ bg: 'red' })
+          }}
+        >
+          SET BLA
+        </button>
+      </div>
       <button
         onClick={() => {
           route.setLocation(
@@ -33,6 +47,15 @@ const NestLevel2Flap = () => {
       >
         | SET hash 2
       </button>
+      <div>
+        <button
+          onClick={() => {
+            route.setHash('EWDW')
+          }}
+        >
+          | SET hash 2
+        </button>
+      </div>
     </div>
   )
 }
@@ -46,7 +69,7 @@ const Bla = () => {
 }
 
 const NestLevel2 = () => {
-  const route = useRoute('[snur]')
+  const route = useRoute('[snur]', { snur: 'DEFAULTJUR' })
   return (
     <div
       style={{
@@ -60,16 +83,16 @@ const NestLevel2 = () => {
           route.setPath({ snur: (~~(Math.random() * 1000)).toString(16) })
         }}
       >
-        SET SNUR
+        SET snur
       </button>
-      --SNUR: {route.path.snur}
+      --snur: {route.path.snur}
       <Bla />
     </div>
   )
 }
 
 const NestLevel1 = () => {
-  const route = useRoute('[bla]')
+  const route = useRoute('[bla]', { bla: 'BLABLABLA!' })
   return (
     <div
       style={{
@@ -92,9 +115,9 @@ const NestLevel1 = () => {
 }
 
 export const Color = () => {
-  const route = useRoute('[bg]')
+  const route = useRoute('[bg]', { bg: 'rgb(251,248,244)' })
 
-  const { bg = 'rgb(251, 248, 244)' } = route.path
+  const { bg } = route.path
 
   const colors = {
     bright: [255, 255, 255],
@@ -181,7 +204,15 @@ export const Color = () => {
 
   return (
     <>
+      <button
+        onClick={() => {
+          route.setLocation('/')
+        }}
+      >
+        reset
+      </button>
       {route.nest(<NestLevel1 />)}
+
       <div
         style={{
           backgroundColor: String(bg),
