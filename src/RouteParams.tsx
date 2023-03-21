@@ -354,7 +354,7 @@ export class RouteParams {
     const newPath = []
 
     if (len) {
-      let parent = this.ctx.parent
+      let parent = this.ctx
       while (parent) {
         if (parent.path) {
           for (let i = 0; i < parent.path.length; i++) {
