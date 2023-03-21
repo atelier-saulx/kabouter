@@ -146,12 +146,20 @@ const SimpleRoute = ({ id }) => {
           route.setPath({
             bla: 'bla',
             flap: 'flap',
-
             snapje: Math.round(Math.random() * 1e6),
           })
         }}
       >
         update path
+      </Button>
+      <Button
+        onClick={() => {
+          route.setPath({
+            bla: null,
+          })
+        }}
+      >
+        clear bla
       </Button>
       <pre>{JSON.stringify(route.path, null, 2)}</pre>
     </div>

@@ -194,7 +194,7 @@ export class RouteParams {
   </div>
   ```
    */
-  setPath(p: { [key: string]: Value }): boolean {
+  setPath(p: { [key: string]: Value | null }): boolean {
     if (deepEqual(this._pathParams, p)) {
       return false
     }
@@ -311,7 +311,7 @@ export class RouteParams {
     return true
   }
 
-  parseLocation(p: { [key: string]: Value }): string {
+  parseLocation(p: { [key: string]: Value | null }): string {
     const results: Map<number, [string, Set<string>]> = new Map()
     let len = Object.keys(p).length
 
@@ -323,7 +323,11 @@ export class RouteParams {
             results.set(i, [parsed.seg, new Set()])
           }
           const r = results.get(i)
-          r[0] = r[0].replaceAll(`[${key}]`, String(p[key]))
+          if (p[key] === null) {
+            r[0] = r[0].replaceAll(`[${key}]`, '')
+          } else {
+            r[0] = r[0].replaceAll(`[${key}]`, String(p[key]))
+          }
           r[1].add(key)
           len--
           if (len === 0) {
@@ -357,7 +361,11 @@ export class RouteParams {
             const match = parent.path[i]
             for (const k in p) {
               if (match.vars.includes(k)) {
-                x[parent.route.start + i + 1] = String(p[k] || '')
+                if (p[k] === null) {
+                  x[parent.route.start + i + 1] = ''
+                } else {
+                  x[parent.route.start + i + 1] = String(p[k] || '')
+                }
                 len--
                 if (len === 0) {
                   break
@@ -380,14 +388,14 @@ export class RouteParams {
     for (let i = 0; i < this._fromPath.length; i++) {
       const from = this._fromPath[i]
       if (!from.matcher.test(x[i])) {
-        newPath.push(from.noVar)
+        newPath.push(parseVal(from.noVar, newPath.length))
       } else {
-        newPath.push(parseVal(x[i], i))
+        newPath.push(parseVal(x[i], newPath.length))
       }
     }
 
     for (let i = 0; i < this.preparedPath.length; i++) {
-      newPath.push(this.preparedPath[i].noVar)
+      newPath.push(parseVal(this.preparedPath[i].noVar, newPath.length))
     }
 
     results.forEach((v, k) => {
