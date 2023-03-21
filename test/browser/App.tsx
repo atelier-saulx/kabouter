@@ -7,6 +7,7 @@ import React, {
 } from 'react'
 import { Color } from './Color'
 import { useRoute, Router, useSearchParam, Link } from '../../src'
+import Flap from './Flap'
 
 const Button: FC<{
   onClick: MouseEventHandler
@@ -101,7 +102,6 @@ const RouteWrapper = ({ children, id }) => {
         {route.nest(
           <div>
             {children}
-
             <div style={{ display: 'flex', gap: '10px' }}>
               <Link path={{ bla: Math.random() * 1000 }}>SET THIS LINK!</Link>
               <Link query={{ x: Math.random() * 1000 }}>
@@ -155,6 +155,15 @@ const SimpleRoute = ({ id }) => {
       <Button
         onClick={() => {
           route.setPath({
+            bla: 'BLAAA',
+          })
+        }}
+      >
+        update path a little bit
+      </Button>
+      <Button
+        onClick={() => {
+          route.setPath({
             bla: null,
           })
         }}
@@ -162,6 +171,7 @@ const SimpleRoute = ({ id }) => {
         clear bla
       </Button>
       <pre>{JSON.stringify(route.path, null, 2)}</pre>
+      {route.nest(<Flap />)}
     </div>
   )
 }
@@ -172,7 +182,7 @@ const QueryComponent = () => {
 }
 
 export const RouterExample: FC<{ location?: string }> = ({ location }) => {
-  const [s, set] = useState(false)
+  const [s, set] = useState(true)
   return (
     <div style={{ padding: 100 }}>
       <Router

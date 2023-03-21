@@ -194,7 +194,18 @@ export class RouteParams {
   </div>
   ```
    */
-  setPath(p: { [key: string]: Value | null }): boolean {
+  setPath(m: { [key: string]: Value | null }, overwrite?: boolean): boolean {
+    const p = { ...m }
+
+    if (!overwrite) {
+      for (const k in this._pathParams) {
+        const x = this._pathParams[k]
+        if (x !== undefined && !p[k]) {
+          p[k] = x
+        }
+      }
+    }
+
     if (deepEqual(this._pathParams, p)) {
       return false
     }
