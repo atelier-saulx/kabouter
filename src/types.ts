@@ -12,6 +12,7 @@ export type PathParams = { [key: string]: Value }
 
 export type PathSegment = {
   vars: string[]
+  spread?: string
   matcher: RegExp
   seg: string
   noVar: string

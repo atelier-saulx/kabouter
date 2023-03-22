@@ -10,16 +10,7 @@ import {
   PathSegment,
 } from './types'
 import { parseLocation, parseRoute } from './parseRoute'
-import { parsePath } from './preparePath'
-
-const parseVal = (v: string, i: number): string =>
-  v === undefined || v === ''
-    ? i > 0
-      ? '*'
-      : ''
-    : typeof v === 'object'
-    ? encodeURIComponent(JSON.stringify(v))
-    : v
+import { parsePath, parseVal } from './path'
 
 export class RouteParams {
   public start: number
@@ -200,7 +191,7 @@ export class RouteParams {
     if (!overwrite) {
       for (const k in this._pathParams) {
         const x = this._pathParams[k]
-        if (x !== undefined && !p[k]) {
+        if ((x !== undefined && p[k] === '') || p[k] === undefined) {
           p[k] = x
         }
       }
@@ -209,6 +200,7 @@ export class RouteParams {
     if (deepEqual(this._pathParams, p)) {
       return false
     }
+
     const newLocation = this.parseLocation(p)
     return this.setLocation(newLocation)
   }
@@ -330,14 +322,21 @@ export class RouteParams {
       const parsed = this.preparedPath[i]
       for (const key in p) {
         if (parsed.vars.includes(key)) {
+          const rKey = parsed.spread ? '...' + key : key
+
           if (!results.has(i)) {
             results.set(i, [parsed.seg, new Set()])
           }
           const r = results.get(i)
           if (p[key] === null) {
-            r[0] = r[0].replaceAll(`[${key}]`, '')
+            r[0] = r[0].replaceAll(`[${rKey}]`, '')
           } else {
-            r[0] = r[0].replaceAll(`[${key}]`, String(p[key]))
+            if (Array.isArray(p[key])) {
+              // @ts-ignore
+              r[0] = r[0].replaceAll(`[${rKey}]`, p[key].join('/'))
+            } else {
+              r[0] = r[0].replaceAll(`[${rKey}]`, String(p[key]))
+            }
           }
           r[1].add(key)
           len--

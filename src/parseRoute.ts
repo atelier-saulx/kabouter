@@ -8,10 +8,20 @@ export const parseRoute = (
 ): PathParams => {
   const params = {}
   const segs = rootCtx.pathName.split('/')
+
+  // will stop matching everywhere...
   for (let i = 0; i < path.length + start + 1; i++) {
     const seg = segs[i]
     if (i > start) {
-      const { vars, matcher } = path[i - start - 1]
+      const { vars, matcher, spread } = path[i - start - 1]
+
+      if (spread) {
+        //  for now...
+        const pathToMatch = segs.slice(i)
+        params[spread] = pathToMatch.map((v) => decodeURIComponent(v))
+        break
+      }
+
       if (seg) {
         const pSeg = segs[i].match(matcher)
         if (pSeg) {
