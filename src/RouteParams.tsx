@@ -236,7 +236,7 @@ export class RouteParams {
         delete this.rootCtx.query[key]
       }
     }
-    const q = serializeQuery(this.rootCtx.query)
+    const q = encodeURIComponent(serializeQuery(this.rootCtx.query))
     if (this.rootCtx.queryString === q) {
       return true
     }

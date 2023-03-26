@@ -39,7 +39,7 @@ export const useRouterListeners = (
       pathChanged: false,
       hash,
       pathName,
-      query: query ? parseQuery(query) || {} : {},
+      query: query ? parseQuery(decodeURIComponent(query)) || {} : {},
       location: parsedLocation,
       updateRoute: (fromPopState) => {
         const ordered = [...componentMap.values()].sort((a, b) => {
