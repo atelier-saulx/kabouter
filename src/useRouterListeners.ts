@@ -83,7 +83,7 @@ export const useRouterListeners = (
           routes.queryChanged = true
         }
         routes.queryString = q
-        routes.query = q ? parseQuery(q) || {} : {}
+        routes.query = q ? parseQuery(decodeURIComponent(q)) || {} : {}
         const newLocation = parseLocation(q, hash, pathName)
         if (newLocation !== routes.location) {
           routes.location = newLocation
