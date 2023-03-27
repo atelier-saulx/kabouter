@@ -39,11 +39,12 @@ export const parsePath = (path: string): PathSegment[] => {
   })
 }
 
-export const parseVal = (v: string, i: number): string =>
-  v === undefined || v === ''
+export const parseVal = (v: string, i: number): string => {
+  return v === undefined || v === ''
     ? i > 0
       ? '*'
       : ''
     : typeof v === 'object'
     ? encodeURIComponent(JSON.stringify(v))
     : v
+}

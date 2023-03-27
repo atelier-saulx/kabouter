@@ -27,6 +27,7 @@ export type ComponentMap = Map<
 >
 
 export type RouterRootCtx = {
+  createdBy?: number
   isRoot: true
   path: PathSegment[]
   updateRoute: (fromPopState: boolean) => void
@@ -51,6 +52,7 @@ export type Location = {
 }
 
 export type RouteChildCtx = {
+  createdBy?: number
   isRoot: false
   path: PathSegment[]
   route?: RouteParams

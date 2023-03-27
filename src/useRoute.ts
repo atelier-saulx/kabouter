@@ -1,8 +1,9 @@
 import { useCallback, useContext, useEffect, useMemo } from 'react'
 import { useUpdate } from './useUpdate'
-import { RouterContext } from './Provider'
+import { RouterContext, defaultRoute } from './Provider'
 import { PathSegment, RouterRootCtx, Value } from './types'
 import { RouteParams } from './RouteParams'
+import { useRouterListeners } from './useRouterListeners'
 
 let routeId = 1
 
@@ -36,6 +37,7 @@ export const useRoute = (
   let rootCtx: RouterRootCtx
 
   const fromPath: PathSegment[] = []
+  const id = useMemo(() => ++routeId, [])
 
   while (parent && !rootCtx) {
     fromPath.unshift(...parent.path)
@@ -46,8 +48,19 @@ export const useRoute = (
     parent = parent.parent
   }
 
-  const id = useMemo(() => ++routeId, [])
-  const start = fromPath.length - 1
+  if (!rootCtx) {
+    rootCtx = useRouterListeners()
+    Object.assign(defaultRoute, rootCtx)
+    defaultRoute.createdBy = id
+    // @ts-ignore
+    rootCtx = defaultRoute
+    fromPath.unshift(...rootCtx.path)
+  } else if (rootCtx.createdBy === id) {
+    useMemo(() => {}, [''])
+    useEffect(() => {}, [''])
+  }
+
+  const start = ctx === rootCtx ? fromPath.length - 2 : fromPath.length - 1
 
   const routeParams = useMemo(() => {
     return new RouteParams(ctx, rootCtx, start, fromPath, path)

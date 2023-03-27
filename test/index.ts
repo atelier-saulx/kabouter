@@ -21,7 +21,7 @@ test('path', async (t) => {
     {}
   ).pipe(writeHandler)
 
-  await wait(100)
+  await wait(150)
 
   const file = await fs.readFile(join(path, 'index.html'))
 

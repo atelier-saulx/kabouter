@@ -2,7 +2,7 @@ import React from 'react'
 import { useRoute } from '../../src'
 
 export default () => {
-  const route = useRoute('[type]/[field]', { type: 'a', field: 'b' })
+  const route = useRoute('[type]/[field]')
   return (
     <div
       style={{

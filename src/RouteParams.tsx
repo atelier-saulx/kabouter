@@ -335,7 +335,10 @@ export class RouteParams {
               // @ts-ignore
               r[0] = r[0].replaceAll(`[${rKey}]`, p[key].join('/'))
             } else {
-              r[0] = r[0].replaceAll(`[${rKey}]`, String(p[key]))
+              r[0] = r[0].replaceAll(
+                `[${rKey}]`,
+                p[key] === undefined ? '*' : String(p[key])
+              )
             }
           }
           r[1].add(key)
@@ -349,7 +352,7 @@ export class RouteParams {
         const r = results.get(i)
         for (const v of parsed.vars) {
           if (!r[1].has(v)) {
-            r[0] = r[0].replaceAll(`[${v}]`, String(this._pathParams[v] || ''))
+            r[0] = r[0].replaceAll(`[${v}]`, String(this._pathParams[v] ?? ''))
           }
         }
       }
