@@ -22,10 +22,12 @@ const Button: FC<{
 }
 
 export const App: FC = () => {
-  const route = useRoute('/[bla]')
+  const route = useRoute('[bla]/[flap]')
   return (
-    <Button onClick={() => route.setPath({ bla: ~~(Math.random() * 1000) })}>
-      Set bla {route.path.bla}
-    </Button>
+    <>
+      <Button onClick={() => route.setPath({ bla: ~~(Math.random() * 1000) })}>
+        Set bla {route.path.bla}
+      </Button>
+    </>
   )
 }

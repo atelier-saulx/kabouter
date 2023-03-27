@@ -292,7 +292,7 @@ export class RouteParams {
     const [pathName, q] = s.split('?')
     this.rootCtx.hash = hash
 
-    const nQ = q ? parseQuery(q) || {} : {}
+    const nQ = q ? parseQuery(decodeURIComponent(q)) || {} : {}
 
     if (pathName !== this.rootCtx.pathName) {
       this.rootCtx.pathChanged = true

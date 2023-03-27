@@ -9,7 +9,6 @@ export const parseRoute = (
   const params = {}
   const segs = rootCtx.pathName.split('/')
 
-  // will stop matching everywhere...
   for (let i = 0; i < path.length + start + 1; i++) {
     const seg = segs[i]
     if (i > start) {
@@ -30,9 +29,10 @@ export const parseRoute = (
               params[vars[x - 1]] = undefined
             } else if (pSeg[x]) {
               params[vars[x - 1]] = decodeURIComponent(pSeg[x])
-              if (/[[]{}]/.test(params[vars[x - 1]])) {
-                console.info('is maybe json', pSeg[x])
-              }
+              // TODO maybe add json in paths later
+              // if (/[[]{}]/.test(params[vars[x - 1]])) {
+              //   console.info('is maybe json', pSeg[x])
+              // }
             } else {
               params[vars[x - 1]] = pSeg[x]
             }
