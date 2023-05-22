@@ -1,5 +1,6 @@
 import React, { CSSProperties, FC, MouseEventHandler, ReactNode } from 'react'
 import { useRoute, Router } from '../../src'
+import { NewPage } from './NewPage'
 
 const Button: FC<{
   onClick: MouseEventHandler
@@ -47,17 +48,37 @@ const Nested: FC<{
   )
 }
 
-export const App: FC = () => {
-  const route = useRoute('[bla]/[flap]')
+const MainPage = () => {
+  const route = useRoute()
+  return (
+    <>
+      <button onClick={() => route.setPath({ page: 'blog' })}>
+        Route setLocation to 'blog'
+      </button>
 
-  console.info('RENDER APP')
+      <button onClick={() => route.setPath({ page: '/blog' })}>
+        Route setLocation to '/blog'
+      </button>
+    </>
+  )
+}
+
+export const App: FC = () => {
+  // const route = useRoute('[bla]/[flap]')
+  const route = useRoute('[page]')
+  const page = route.path.page
+
+  console.info(page)
+
+  if (page === 'blog') return <NewPage />
+  if (page === '') return <MainPage />
 
   return (
     <>
-      <Button onClick={() => route.setPath({ bla: ~~(Math.random() * 1000) })}>
+      {/* <Button onClick={() => route.setPath({ bla: ~~(Math.random() * 1000) })}>
         Set bla {route.path.bla}
         {route.nest(<Nested />)}
-      </Button>
+      </Button> */}
     </>
   )
 }
