@@ -1,5 +1,5 @@
 import { parseQuery, deepMerge, serializeQuery, deepEqual } from '@saulx/utils'
-import React, { ReactNode } from 'react'
+import React, { ReactElement, ReactNode } from 'react'
 import { RouterContext } from './Provider'
 import {
   QueryParams,
@@ -63,7 +63,7 @@ export class RouteParams {
   }
   ```
   */
-  nest(children: ReactNode): ReactNode {
+  nest(children: ReactNode): ReactElement {
     return (
       <RouterContext.Provider
         value={{
@@ -202,6 +202,9 @@ export class RouteParams {
     }
 
     const newLocation = this.parseLocation(p)
+
+    console.info('??????????? GO GO GO', newLocation, p)
+
     return this.setLocation(newLocation)
   }
 
@@ -368,10 +371,12 @@ export class RouteParams {
 
     if (len) {
       let parent = this.ctx
+
       while (parent) {
         if (parent.path) {
           for (let i = 0; i < parent.path.length; i++) {
             const match = parent.path[i]
+
             for (const k in p) {
               if (match.vars.includes(k)) {
                 if (p[k] === null) {

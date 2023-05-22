@@ -56,7 +56,7 @@ export const useRouterListeners = (
         routes.hashChanged = false
         routes.queryChanged = false
         if (!fromPopState && isBrowser) {
-          global.history.pushState(undefined, undefined, ctx.location)
+          global.history.pushState(undefined, undefined, ctx.location || '/')
         }
       },
       children: [],

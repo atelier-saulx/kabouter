@@ -2,7 +2,7 @@ import React from 'react'
 import { useRoute, Router } from '../../src'
 
 export const NewPage = () => {
-  const route = useRoute()
+  const route = useRoute('[page]')
   return (
     <div
       style={{
@@ -11,11 +11,11 @@ export const NewPage = () => {
         backgroundColor: 'green',
       }}
     >
-      <button onClick={() => route.setPath({ page: '' })}>
+      <button onClick={() => route.setPath({ page: 'snurp' })}>
         Route SetPath to ''
       </button>
 
-      <button onClick={() => route.setPath({ page: '/' })}>
+      <button onClick={() => route.setPath({ page: null })}>
         Route SetPath to '/'
       </button>
     </div>

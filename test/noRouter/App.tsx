@@ -25,53 +25,70 @@ const Button: FC<{
 const Nested: FC<{
   children?: ReactNode
 }> = ({ children }) => {
-  const route = useRoute('[person]')
+  const route = useRoute()
   console.info('RENDER NESTED')
 
   return (
-    <button
-      style={{
-        marginRight: 8,
-        padding: 10,
-        border: '2px solid black',
-      }}
-      onClick={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        route.setPath({
-          person: Math.random() > 0.5 ? 'jim' : 'kyle',
-        })
-      }}
-    >
-      NESTED {route.path.person} {children}
-    </button>
-  )
-}
-
-const MainPage = () => {
-  const route = useRoute()
-  return (
     <>
-      <button onClick={() => route.setPath({ page: 'blog' })}>
-        Route setLocation to 'blog'
+      <button
+        style={{
+          marginRight: 8,
+          padding: 10,
+          border: '2px solid black',
+        }}
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          route.setLocation('/')
+        }}
+      >
+        reset all
       </button>
 
-      <button onClick={() => route.setPath({ page: '/blog' })}>
-        Route setLocation to '/blog'
+      <button
+        style={{
+          marginRight: 8,
+          padding: 10,
+          border: '2px solid black',
+        }}
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          route.setLocation('/blog')
+        }}
+      >
+        go to blog
       </button>
     </>
   )
 }
 
+const MainPage = () => {
+  // [page]
+  const route = useRoute()
+  return (
+    <>
+      <Button onClick={() => route.setLocation('/blog')}>
+        Route setLocation to 'blog'
+      </Button>
+
+      {/* <Button onClick={() => route.setPath({ page: 'bla' })}>
+        Route setLocation to 'bla'
+      </Button> */}
+    </>
+  )
+}
+
 export const App: FC = () => {
-  // const route = useRoute('[bla]/[flap]')
   const route = useRoute('[page]')
   const page = route.path.page
 
   console.info(page)
 
+  if (page === 'snurp') return route.nest(<Nested />)
+
   if (page === 'blog') return <NewPage />
-  if (page === '') return <MainPage />
+  return <MainPage />
 
   return (
     <>
