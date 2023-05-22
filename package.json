@@ -1,6 +1,6 @@
 {
   "name": "kabouter",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "main": "./dist/index.js",
   "scripts": {
     "build": "npx tsc",
@@ -40,7 +40,7 @@
     "extends": "@saulx/eslint-config"
   },
   "dependencies": {
-    "@saulx/utils": "^3.2.2"
+    "@saulx/utils": "^3.4.2"
   },
   "devDependencies": {
     "esbuild": "0.17.10",

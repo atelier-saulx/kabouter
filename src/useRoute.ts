@@ -39,6 +39,7 @@ export const useRoute = (
   const fromPath: PathSegment[] = []
   const id = useMemo(() => ++routeId, [])
 
+  // can prob use a useMemo...
   while (parent && !rootCtx) {
     fromPath.unshift(...parent.path)
     if (parent.isRoot) {

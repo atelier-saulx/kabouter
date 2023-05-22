@@ -1,4 +1,4 @@
-import { parseQuery, deepEqual, deepMerge, serializeQuery } from '@saulx/utils'
+import { parseQuery, deepMerge, serializeQuery, deepEqual } from '@saulx/utils'
 import React, { ReactNode } from 'react'
 import { RouterContext } from './Provider'
 import {
