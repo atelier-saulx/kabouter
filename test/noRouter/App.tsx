@@ -79,7 +79,7 @@ const MainPage = () => {
   )
 }
 
-export const App: FC = () => {
+export const AppFn: FC = () => {
   const route = useRoute('[page]')
   const page = route.path.page
 
@@ -97,5 +97,13 @@ export const App: FC = () => {
         {route.nest(<Nested />)}
       </Button> */}
     </>
+  )
+}
+
+export const App: FC = () => {
+  return (
+    <Router>
+      <AppFn />
+    </Router>
   )
 }
