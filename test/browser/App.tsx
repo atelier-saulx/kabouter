@@ -87,7 +87,12 @@ const RouteWrapper = ({ children, id }) => {
             margin: 15,
           }}
           onClick={() => {
-            route.setQuery({ hello: true, gur: [1, 2, 3, 4, 5], id })
+            route.setQuery({
+              hello: true,
+              gur: [1, 2, 3, 4, 5],
+              id,
+              nest: { bla: true },
+            })
           }}
         >
           Set q parameters

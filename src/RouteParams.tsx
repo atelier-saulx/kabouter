@@ -203,8 +203,6 @@ export class RouteParams {
 
     const newLocation = this.parseLocation(p)
 
-    console.info('??????????? GO GO GO', newLocation, p)
-
     return this.setLocation(newLocation)
   }
 
@@ -239,7 +237,7 @@ export class RouteParams {
         delete this.rootCtx.query[key]
       }
     }
-    const q = encodeURIComponent(serializeQuery(this.rootCtx.query))
+    const q = serializeQuery(this.rootCtx.query)
     if (this.rootCtx.queryString === q) {
       return true
     }
