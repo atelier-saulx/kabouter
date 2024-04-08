@@ -56,7 +56,7 @@ export const useRouterListeners = (
         routes.hashChanged = false
         routes.queryChanged = false
         if (!fromPopState && isBrowser) {
-          global.history.pushState(undefined, undefined, ctx.location || '/')
+          window.history.pushState(undefined, undefined, ctx.location || '/')
         }
       },
       children: [],
@@ -90,11 +90,11 @@ export const useRouterListeners = (
           routes.updateRoute(true)
         }
       }
-      global.addEventListener('hashchange', listener)
-      global.addEventListener('popstate', listener)
+      window.addEventListener('hashchange', listener)
+      window.addEventListener('popstate', listener)
       return () => {
-        global.removeEventListener('hashchange', listener)
-        global.removeEventListener('popstate', listener)
+        window.removeEventListener('hashchange', listener)
+        window.removeEventListener('popstate', listener)
       }
     }
     return () => {}
