@@ -1,4 +1,4 @@
-import { PathParams, PathSegment, RouterRootCtx } from './types'
+import { PathParams, PathSegment, RouterRootCtx } from './types.js'
 
 export const parseRoute = (
   rootCtx: RouterRootCtx,

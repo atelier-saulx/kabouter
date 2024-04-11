@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Router, Link, useRoute } from '../../src'
+import { Router, Link, useRoute } from '../../src/index.js'
 
 const AComponent = () => {
   return (

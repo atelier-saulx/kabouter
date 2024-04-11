@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { parseQuery } from '@saulx/utils'
-import { ComponentMap, RouterRootCtx, Location } from './types'
-import { parsePath } from './path'
+import { ComponentMap, RouterRootCtx, Location } from './types.js'
+import { parsePath } from './path.js'
 
 const isBrowser = typeof window !== 'undefined'
 

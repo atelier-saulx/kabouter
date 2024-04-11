@@ -5,9 +5,9 @@ import React, {
   ReactNode,
   useState,
 } from 'react'
-import { Color } from './Color'
-import { useRoute, Router, useSearchParam, Link } from '../../src'
-import Flap from './Flap'
+import { Color } from './Color.js'
+import { useRoute, Router, useSearchParam, Link } from '../../src/index.js'
+import Flap from './Flap.js'
 
 const Button: FC<{
   onClick: MouseEventHandler

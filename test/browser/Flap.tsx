@@ -1,5 +1,5 @@
 import React from 'react'
-import { useRoute } from '../../src'
+import { useRoute } from '../../src/index.js'
 
 export default () => {
   const route = useRoute('[type]/[field]')

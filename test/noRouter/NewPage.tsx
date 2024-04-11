@@ -1,5 +1,5 @@
 import React from 'react'
-import { useRoute, Router } from '../../src'
+import { useRoute, Router } from '../../src/index.js'
 
 export const NewPage = () => {
   const route = useRoute('[page]')

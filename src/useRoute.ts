@@ -1,9 +1,9 @@
 import { useCallback, useContext, useEffect, useMemo } from 'react'
-import { useUpdate } from './useUpdate'
-import { RouterContext } from './Provider'
-import { PathSegment, RouterRootCtx, Value } from './types'
-import { RouteParams } from './RouteParams'
-import { useRouterListeners } from './useRouterListeners'
+import { useUpdate } from './useUpdate.js'
+import { RouterContext } from './Provider.js'
+import { PathSegment, RouterRootCtx, Value } from './types.js'
+import { RouteParams } from './RouteParams.js'
+import { useRouterListeners } from './useRouterListeners.js'
 
 let routeId = 1
 

@@ -1,6 +1,6 @@
 import React, { CSSProperties, FC, MouseEventHandler, ReactNode } from 'react'
-import { useRoute, Router } from '../../src'
-import { NewPage } from './NewPage'
+import { useRoute, Router } from '../../src/index.js'
+import { NewPage } from './NewPage.js'
 
 const Button: FC<{
   onClick: MouseEventHandler
@@ -89,15 +89,6 @@ export const AppFn: FC = () => {
 
   if (page === 'blog') return <NewPage />
   return <MainPage />
-
-  return (
-    <>
-      {/* <Button onClick={() => route.setPath({ bla: ~~(Math.random() * 1000) })}>
-        Set bla {route.path.bla}
-        {route.nest(<Nested />)}
-      </Button> */}
-    </>
-  )
 }
 
 export const App: FC = () => {

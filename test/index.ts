@@ -1,15 +1,16 @@
 import React from 'react'
 import { renderToPipeableStream } from 'react-dom/server'
 import test from 'ava'
-import { RouterExample } from './browser/App'
-import { RouterExample as SSRRouterExample } from './browser/SSRApp'
+import { RouterExample } from './browser/App.js'
+import { RouterExample as SSRRouterExample } from './browser/SSRApp.js'
 import { wait } from '@saulx/utils'
 import fs from 'node:fs/promises'
 import { join } from 'node:path'
 import { createWriteStream } from 'node:fs'
+import * as url from 'url'
 
 test('path', async (t) => {
-  const path = join(__dirname, 'tmp')
+  const path = join(url.fileURLToPath(new URL('.', import.meta.url)), 'tmp')
   await fs.rm(join(path, 'index.html')).catch(() => {})
   await fs.mkdir(path).catch(() => {})
   const writeHandler = createWriteStream(join(path, 'index.html'))
@@ -31,7 +32,7 @@ test('path', async (t) => {
 })
 
 test.only('path + query', async (t) => {
-  const path = join(__dirname, 'tmp')
+  const path = join(url.fileURLToPath(new URL('.', import.meta.url)), 'tmp')
   await fs.rm(join(path, 'index.html')).catch(() => {})
   await fs.mkdir(path).catch(() => {})
   const writeHandler = createWriteStream(join(path, 'index.html'))

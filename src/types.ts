@@ -1,4 +1,4 @@
-import { RouteParams } from './RouteParams'
+import { RouteParams } from './RouteParams.js'
 
 export type QueryValue = string | number | boolean
 

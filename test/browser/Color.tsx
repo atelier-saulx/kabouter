@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import { useRoute } from '../../src'
+import { useRoute } from '../../src/index.js'
 
 const NestLevel2Flap = () => {
   const route = useRoute('[snur]', { snur: 'DEFAULT' })

@@ -1,6 +1,6 @@
 import { deepMerge, serializeQuery, deepEqual } from '@saulx/utils'
 import React, { ReactElement, ReactNode } from 'react'
-import { RouterContext } from './Provider'
+import { RouterContext } from './Provider.js'
 import {
   QueryParams,
   PathParams,
@@ -8,10 +8,10 @@ import {
   Value,
   RouterRootCtx,
   PathSegment,
-} from './types'
-import { parseLocation, parseRoute } from './parseRoute'
-import { parsePath, parseVal } from './path'
-import { setLocationOnContext } from './setLocation'
+} from './types.js'
+import { parseLocation, parseRoute } from './parseRoute.js'
+import { parsePath, parseVal } from './path.js'
+import { setLocationOnContext } from './setLocation.js'
 
 export class RouteParams {
   public start: number

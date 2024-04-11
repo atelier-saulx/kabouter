@@ -1,28 +1,8 @@
 {
+  "extends": "@saulx/tsconfig/default.json",
   "compilerOptions": {
-    "jsx": "react",
-    "target": "es2021",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "removeComments": false,
-    "noImplicitAny": false,
-    "skipLibCheck": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "declaration": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "declarationMap": true,
-    "baseUrl": ".",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "paths": {
-      "~": ["src"],
-      "~/*": ["src/*"]
-    }
+    "outDir": "dist",
+    "jsx": "react"
   },
-  "exclude": ["node_modules", "dist", "scripts", "functions", "test"],
-  "types": ["typePatches"]
+  "include": ["src", "test"]
 }

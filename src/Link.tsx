@@ -7,11 +7,11 @@ import React, {
   useMemo,
   useCallback,
 } from 'react'
-import { PathParams, QueryParams } from './types'
-import { RouterContext } from './Provider'
+import { PathParams, QueryParams } from './types.js'
+import { RouterContext } from './Provider.js'
 import { serializeQuery } from '@saulx/utils'
-import { useRoute } from './useRoute'
-import { setLocationOnContext } from './setLocation'
+import { useRoute } from './useRoute.js'
+import { setLocationOnContext } from './setLocation.js'
 
 type LinkProps = {
   children?: ReactNode

@@ -1,4 +1,4 @@
-import { PathSegment } from './types'
+import { PathSegment } from './types.js'
 
 const matchVars = /\[.*?\]/g
 const emptyMatch = /^.{0}$/

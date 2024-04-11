@@ -1,4 +1,4 @@
-import { useRoute } from './useRoute'
+import { useRoute } from './useRoute.js'
 
 /**
 Hook to interact with a single search param, set to `null` to clear

@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, FC } from 'react'
-import { RouterCtx, RouterRootCtx, Location } from './types'
-import { useRouterListeners } from './useRouterListeners'
+import { RouterCtx, RouterRootCtx, Location } from './types.js'
+import { useRouterListeners } from './useRouterListeners.js'
 
 export const defaultRoute: RouterCtx = {
   path: [],

@@ -1,5 +1,5 @@
 import { parseQuery, deepEqual } from '@saulx/utils'
-import { RouterRootCtx } from './types'
+import { RouterRootCtx } from './types.js'
 
 export function setLocationOnContext(location: string, context: RouterRootCtx) {
   if (location === context.location) {
