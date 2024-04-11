@@ -42,6 +42,7 @@ export const useRouterListeners = (
       query: query ? parseQuery(decodeURIComponent(query)) || {} : {},
       location: parsedLocation,
       updateRoute: (fromPopState) => {
+        console.log('runs')
         const ordered = [...componentMap.values()].sort((a, b) => {
           return a.route.start < b.route.start
             ? -1

@@ -1,4 +1,4 @@
-import { parseQuery, deepMerge, serializeQuery, deepEqual } from '@saulx/utils'
+import { deepMerge, serializeQuery, deepEqual } from '@saulx/utils'
 import React, { ReactElement, ReactNode } from 'react'
 import { RouterContext } from './Provider'
 import {
@@ -11,6 +11,7 @@ import {
 } from './types'
 import { parseLocation, parseRoute } from './parseRoute'
 import { parsePath, parseVal } from './path'
+import { setLocationOnContext } from './setLocation'
 
 export class RouteParams {
   public start: number
@@ -285,34 +286,7 @@ export class RouteParams {
   ``` 
 */
   setLocation(location: string): boolean {
-    if (location === this.rootCtx.location) {
-      return false
-    }
-
-    const [s, hash = ''] = location.split('#')
-    const [pathName, q] = s.split('?')
-    this.rootCtx.hash = hash
-
-    const nQ = q ? parseQuery(decodeURIComponent(q)) || {} : {}
-
-    if (pathName !== this.rootCtx.pathName) {
-      this.rootCtx.pathChanged = true
-    }
-
-    if (!deepEqual(nQ, this.rootCtx.query)) {
-      this.rootCtx.queryChanged = true
-    }
-
-    if (hash !== this.rootCtx.hash) {
-      this.rootCtx.hashChanged = true
-    }
-
-    this.rootCtx.pathName = pathName
-    this.rootCtx.query = nQ
-    this.rootCtx.hash = hash
-    this.rootCtx.location = location
-    this.rootCtx.updateRoute(false)
-    return true
+    return setLocationOnContext(location, this.rootCtx)
   }
 
   parseLocation(p: { [key: string]: Value | null }): string {

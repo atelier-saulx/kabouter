@@ -10,6 +10,8 @@ import React, {
 import { PathParams, QueryParams } from './types'
 import { RouterContext } from './Provider'
 import { serializeQuery } from '@saulx/utils'
+import { useRoute } from './useRoute'
+import { setLocationOnContext } from './setLocation'
 
 type LinkProps = {
   children?: ReactNode
@@ -43,6 +45,7 @@ export const Link: FC<LinkProps> = ({
   ...props
 }) => {
   const ctx = useContext(RouterContext)
+  const route = useRoute()
 
   const hrefParsed = useMemo(() => {
     if (href) {
@@ -77,8 +80,7 @@ export const Link: FC<LinkProps> = ({
         e.stopPropagation()
 
         if (ctx.isRoot) {
-          ctx.location = hrefParsed
-          ctx.updateRoute(false)
+          setLocationOnContext(hrefParsed, ctx)
         } else {
           ctx.route?.setLocation(hrefParsed)
         }
