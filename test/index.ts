@@ -2,6 +2,7 @@ import React from 'react'
 import { renderToPipeableStream } from 'react-dom/server'
 import test from 'ava'
 import { RouterExample } from './browser/App'
+import { RouterExample as SSRRouterExample } from './browser/SSRApp'
 import { wait } from '@saulx/utils'
 import fs from 'node:fs/promises'
 import { join } from 'node:path'
@@ -27,4 +28,24 @@ test('path', async (t) => {
 
   t.true(file.includes('466032'))
   t.true(file.includes('172'))
+})
+
+test.only('path + query', async (t) => {
+  const path = join(__dirname, 'tmp')
+  await fs.rm(join(path, 'index.html')).catch(() => {})
+  await fs.mkdir(path).catch(() => {})
+  const writeHandler = createWriteStream(join(path, 'index.html'))
+
+  renderToPipeableStream(
+    React.createElement(SSRRouterExample, {
+      location: '/ssr/?articleId=bar',
+    }),
+    {}
+  ).pipe(writeHandler)
+
+  await wait(150)
+
+  const file = await fs.readFile(join(path, 'index.html'))
+
+  t.true(file.includes('/ssr/?articleId=foo'))
 })

@@ -54,6 +54,10 @@ export const Link: FC<LinkProps> = ({
     if (path && ctx.route) {
       const loc = ctx.route.parseLocation(path)
       link = loc
+    } else if (ctx.isRoot) {
+      link = ctx.pathName
+    } else {
+      link = ctx.route.rootCtx.pathName
     }
 
     const qP = query ? '?' + serializeQuery(query) : ''
@@ -67,10 +71,17 @@ export const Link: FC<LinkProps> = ({
       if (onClick) {
         onClick(e)
       }
+
       if (!hrefParsed.startsWith('http')) {
         e.preventDefault()
         e.stopPropagation()
-        ctx.route?.setLocation(hrefParsed)
+
+        if (ctx.isRoot) {
+          ctx.location = hrefParsed
+          ctx.updateRoute(false)
+        } else {
+          ctx.route?.setLocation(hrefParsed)
+        }
       }
     },
     [hrefParsed]
