@@ -7,52 +7,29 @@
     "build": "npx tsc",
     "watch": "npx tsc --watch",
     "test": "npx ava --verbose",
-    "test-browser-norouter": "npx aristotle watch -t test/noRouter/index.tsx -p 3011",
-    "test-browser": "npx aristotle watch -t test/browser/index.tsx -p 3010",
-    "build-browser": "npx aristotle build -t test/browser/index.tsx -d test/browser/dist",
-    "build-bundle": "npx esbuild ./src/index.ts --external:react --external:@saulx/utils --external:@saulx/hash --bundle --outfile=bundle.js --minify"
+    "test-browser": "npx aristotle watch -t test/browser/index.tsx -p 3010"
   },
   "repository": "https://github.com/atelier-saulx/kabouter",
-  "lint-staged": {
-    "{js,json}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ]
-  },
   "sideEffects": false,
   "ava": {
     "timeout": "2m",
     "files": [
-      "./dist/test/**/*.js"
+      "./dist/test/index.js"
     ]
   },
   "prettier": "@saulx/prettier-config",
-  "eslintConfig": {
-    "extends": "@saulx/eslint-config"
-  },
   "dependencies": {
-    "@saulx/utils": "^3.4.2"
+    "@saulx/utils": "^5.0.0"
   },
   "devDependencies": {
-    "esbuild": "0.17.10",
+    "esbuild": "^0.20.2",
+    "prettier": "^3.2.5",
     "react-dom": "^18.2.0",
-    "@saulx/aristotle-server": "^1.1.0",
-    "@saulx/eslint-config": "https://github.com/atelier-saulx/eslint-config",
-    "eslint": "^7.18.0",
-    "husky": "^3.0.8",
-    "@saulx/aristotle": "^4.6.0",
     "react": "^18.2.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "lint-staged": "^9.4.2",
-    "prettier": "^2.2.1",
-    "ts-node": "10.9.1",
-    "@saulx/prettier-config": "^1.0.0",
-    "@saulx/tsconfig": "^1.0.6",
+    "@saulx/prettier-config": "^2.0.0",
+    "@saulx/tsconfig": "^1.1.0",
     "@types/node": "18",
     "ava": "5.3.1",
     "typescript": "^5.2.2"

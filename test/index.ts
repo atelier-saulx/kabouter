@@ -20,7 +20,7 @@ test('path', async (t) => {
       location:
         '/wrapper-a/wrapper-ab/aba-flap/*/466032/bla?hello&gur=1,2,3,4,5&id=ab&x=172',
     }),
-    {}
+    {},
   ).pipe(writeHandler)
 
   await wait(150)
@@ -31,7 +31,7 @@ test('path', async (t) => {
   t.true(file.includes('172'))
 })
 
-test.only('path + query', async (t) => {
+test('path + query', async (t) => {
   const path = join(url.fileURLToPath(new URL('.', import.meta.url)), 'tmp')
   await fs.rm(join(path, 'index.html')).catch(() => {})
   await fs.mkdir(path).catch(() => {})
@@ -41,7 +41,7 @@ test.only('path + query', async (t) => {
     React.createElement(SSRRouterExample, {
       location: '/ssr/?articleId=bar',
     }),
-    {}
+    {},
   ).pipe(writeHandler)
 
   await wait(150)
