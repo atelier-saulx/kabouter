@@ -4,6 +4,7 @@ import React, {
   CSSProperties,
   useContext,
   MouseEventHandler,
+  MouseEvent,
   useMemo,
   useCallback,
 } from 'react'
@@ -20,7 +21,7 @@ type LinkProps = {
   hash?: string
   location?: string
   style?: CSSProperties
-  onClick?: MouseEventHandler<HTMLAnchorElement>
+  onClick?: (event: MouseEvent<HTMLAnchorElement>) => boolean | void
 }
 
 /**
@@ -74,7 +75,9 @@ export const Link: FC<LinkProps> = ({
   const wrappedOnClick: MouseEventHandler<HTMLAnchorElement> = useCallback(
     (e) => {
       if (onClick) {
-        onClick(e)
+        if (onClick(e)) {
+          return
+        }
       }
       if (!hrefParsed.startsWith('http')) {
         e.preventDefault()
