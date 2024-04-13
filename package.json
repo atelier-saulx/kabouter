@@ -19,6 +19,7 @@
   },
   "prettier": "@saulx/prettier-config",
   "dependencies": {
+    "@saulx/hash": "^3.0.0",
     "@saulx/utils": "^5.0.0"
   },
   "devDependencies": {

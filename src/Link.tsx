@@ -10,8 +10,7 @@ import React, {
 import { PathParams, QueryParams } from './types.js'
 import { RouterContext } from './Provider.js'
 import { serializeQuery } from '@saulx/utils'
-import { useRoute } from './useRoute.js'
-import { setLocationOnContext } from './setLocation.js'
+import { hashObjectIgnoreKeyOrder } from '@saulx/hash'
 
 type LinkProps = {
   children?: ReactNode
@@ -69,8 +68,8 @@ export const Link: FC<LinkProps> = ({
     const qP = query ? '?' + serializeQuery(query) : ''
     const hP = hash ? '#' + hash : ''
 
-    return link + hP + qP
-  }, [path, query, hash, href])
+    return ctx.route.rootCtx.prefix + link + hP + qP
+  }, [path ? hashObjectIgnoreKeyOrder(path) : null, query, hash, href])
 
   const wrappedOnClick: MouseEventHandler<HTMLAnchorElement> = useCallback(
     (e) => {
@@ -98,11 +97,7 @@ export const Link: FC<LinkProps> = ({
 
   return (
     <>
-      <a
-        href={ctx.route.rootCtx.prefix + hrefParsed}
-        onClick={wrappedOnClick}
-        {...props}
-      />
+      <a href={hrefParsed} onClick={wrappedOnClick} {...props} />
       {hrefParsed}
     </>
   )
