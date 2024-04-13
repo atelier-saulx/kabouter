@@ -27,7 +27,7 @@ export function setLocationOnContext(location: string, context: RouterRootCtx) {
   context.pathName = pathName
   context.query = nQ
   context.hash = hash
-  context.location = location
+  context.location = context.prefix + location
   context.updateRoute(false)
   return true
 }

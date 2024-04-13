@@ -1,6 +1,7 @@
 import React, { createContext, ReactNode, FC } from 'react'
 import { RouterCtx, RouterRootCtx, Location } from './types.js'
 import { useRouterListeners } from './useRouterListeners.js'
+import { useRoute } from './useRoute.js'
 
 export const defaultRoute: RouterCtx = {
   path: [],
@@ -10,14 +11,19 @@ export const defaultRoute: RouterCtx = {
 
 export const RouterContext = createContext<RouterCtx>(defaultRoute)
 
+const Wrap = ({ children }) => {
+  return useRoute().nest(children)
+}
+
 const DefaultRoutes: FC<{
   children: ReactNode
   path?: string
+  prefix?: string
   location?: Location
-}> = ({ children, path, location }) => {
+}> = ({ children, path, location, prefix }) => {
   return (
-    <RouterContext.Provider value={useRouterListeners(path, location)}>
-      {children}
+    <RouterContext.Provider value={useRouterListeners(path, location, prefix)}>
+      <Wrap>{children}</Wrap>
     </RouterContext.Provider>
   )
 }
@@ -26,12 +32,13 @@ const DefaultRoutes: FC<{
 export const Router: FC<{
   children: ReactNode
   routes?: RouterRootCtx
+  prefix?: string
   path?: string
   location?: Location
-}> = ({ children, routes, path, location }) => {
+}> = ({ children, routes, path, location, prefix }) => {
   if (!routes) {
     return (
-      <DefaultRoutes path={path || ''} location={location}>
+      <DefaultRoutes prefix={prefix} path={path || ''} location={location}>
         {children}
       </DefaultRoutes>
     )

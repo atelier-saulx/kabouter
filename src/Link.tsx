@@ -45,7 +45,12 @@ export const Link: FC<LinkProps> = ({
   ...props
 }) => {
   const ctx = useContext(RouterContext)
-  const route = useRoute()
+
+  if (ctx.isRoot) {
+    const msg = 'Kabouter:Link needs to be used in a nested route'
+    console.error(msg)
+    return <div style={{ color: 'red' }}>{msg}</div>
+  }
 
   const hrefParsed = useMemo(() => {
     if (href) {
@@ -54,13 +59,11 @@ export const Link: FC<LinkProps> = ({
 
     let link = '/'
 
-    if (path && ctx.route) {
+    if (path) {
       const loc = ctx.route.parseLocation(path)
       link = loc
-    } else if (ctx.isRoot) {
-      link = ctx.pathName
     } else {
-      link = ctx.route.rootCtx.pathName
+      link = ctx.route.rootCtx.location.replace(ctx.route.rootCtx.prefixRe, '')
     }
 
     const qP = query ? '?' + serializeQuery(query) : ''
@@ -74,20 +77,33 @@ export const Link: FC<LinkProps> = ({
       if (onClick) {
         onClick(e)
       }
-
       if (!hrefParsed.startsWith('http')) {
         e.preventDefault()
         e.stopPropagation()
+        if (href) {
+          ctx.route.setLocation(href)
+        }
 
-        if (ctx.isRoot) {
-          setLocationOnContext(hrefParsed, ctx)
-        } else {
-          ctx.route?.setLocation(hrefParsed)
+        if (query !== undefined) {
+          ctx.route.setQuery(query)
+        }
+
+        if (path) {
+          ctx.route.setPath(path)
         }
       }
     },
-    [hrefParsed]
+    [hrefParsed],
   )
 
-  return <a href={hrefParsed} onClick={wrappedOnClick} {...props} />
+  return (
+    <>
+      <a
+        href={ctx.route.rootCtx.prefix + hrefParsed}
+        onClick={wrappedOnClick}
+        {...props}
+      />
+      {hrefParsed}
+    </>
+  )
 }

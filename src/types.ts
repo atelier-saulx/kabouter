@@ -28,6 +28,8 @@ export type ComponentMap = Map<
 
 export type RouterRootCtx = {
   createdBy?: number
+  prefix: string
+  prefixRe: RegExp
   isRoot: true
   path: PathSegment[]
   updateRoute: (fromPopState: boolean) => void

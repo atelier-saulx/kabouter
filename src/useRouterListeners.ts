@@ -9,10 +9,10 @@ const parseLocation = (q: string, hash: string, pathName: string): string => {
   return q && hash
     ? pathName + '?' + q + '#' + hash
     : q
-    ? pathName + '?' + q
-    : hash
-    ? pathName + '#' + hash
-    : pathName
+      ? pathName + '?' + q
+      : hash
+        ? pathName + '#' + hash
+        : pathName
 }
 
 export const useRouterListeners = (
@@ -24,31 +24,35 @@ export const useRouterListeners = (
       isBrowser && window.location.hash
         ? window.location.hash.substring(1)
         : undefined,
-  }
+  },
+  prefix = '',
 ): RouterRootCtx => {
   const routes = useMemo(() => {
     const { path: pathName, query, hash } = location
+
+    const prefixRe = new RegExp(`^${prefix}`)
 
     const componentMap: ComponentMap = new Map()
     const parsedLocation = parseLocation(query, hash, pathName)
     const ctx: RouterRootCtx = {
       isRoot: true,
       componentMap,
+      prefix,
+      prefixRe: prefixRe,
       hashChanged: false,
       queryChanged: false,
       pathChanged: false,
       hash,
-      pathName,
+      pathName: pathName.replace(prefixRe, ''),
       query: query ? parseQuery(decodeURIComponent(query)) || {} : {},
       location: parsedLocation,
       updateRoute: (fromPopState) => {
-        console.log('runs')
         const ordered = [...componentMap.values()].sort((a, b) => {
           return a.route.start < b.route.start
             ? -1
             : a.route.start === b.route.start
-            ? 0
-            : 1
+              ? 0
+              : 1
         })
         ordered.forEach((v) => {
           v.update()
