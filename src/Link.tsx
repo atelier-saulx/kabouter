@@ -46,7 +46,7 @@ export const Link: FC<LinkProps> = ({
   const ctx = useContext(RouterContext)
 
   if (ctx.isRoot) {
-    const msg = 'Kabouter:Link needs to be used in a nested route'
+    const msg = 'Link needs to be used in a nested route'
     console.error(msg)
     return <div style={{ color: 'red' }}>{msg}</div>
   }
@@ -95,10 +95,5 @@ export const Link: FC<LinkProps> = ({
     [hrefParsed],
   )
 
-  return (
-    <>
-      <a href={hrefParsed} onClick={wrappedOnClick} {...props} />
-      {hrefParsed}
-    </>
-  )
+  return <a href={hrefParsed} onClick={wrappedOnClick} {...props} />
 }
