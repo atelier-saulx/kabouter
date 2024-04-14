@@ -12,7 +12,7 @@ const QueryLink = ({ query }) => {
 const PathLink = ({ path }) => {
   return (
     <div>
-      PATH {JSON.stringify(path)} <Link path={path}>link</Link>
+      PATH {JSON.stringify(path)} <Link path={path}>link!</Link>
     </div>
   )
 }
@@ -21,10 +21,24 @@ const Bla = () => {
   const r = useRoute()
   return (
     <div>
-      <p>SECTION: {r.path.section}</p>
+      <p>LOCATION: {r.location}</p>
 
-      <p>ARTICLE: {r.path.article}</p>
-      <PathLink path={{ article: null, section: null }} />
+      {/* <p>SECTION: {r.path.section}</p> */}
+
+      {/* <p>ARTICLE: {r.path.article}</p> */}
+      <PathLink path={{ section: null, article: null }} />
+    </div>
+  )
+}
+
+const Doink = () => {
+  const r = useRoute()
+
+  return (
+    <div>
+      {r.location}
+
+      <Bla />
     </div>
   )
 }
@@ -39,16 +53,8 @@ const Things = () => {
       <p>SECTION: {r.path.section}</p>
 
       <p>ARTICLE: {r.path.article}</p>
-      <Bla />
 
-      <div
-        onClick={() => {
-          r.setPath({ section: 'YO' })
-        }}
-      >
-        CLICK
-      </div>
-      <PathLink path={{ article: 'snarp', section: 'eu' }} />
+      <Doink />
     </div>,
   )
 }
@@ -60,8 +66,7 @@ export const RouterExample: FC<{ location?: string }> = ({ location }) => {
         location={
           location
             ? {
-                path: location.split('?')[0],
-                query: location.split('?')[1],
+                path: '/migration/ar995f9cbd',
               }
             : undefined
         }

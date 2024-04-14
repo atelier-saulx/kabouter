@@ -51,13 +51,17 @@ test('path + query', async (t) => {
 })
 
 test.only('path + reset', async (t) => {
-  console.info(
-    renderToString(
-      React.createElement(SSRRouterExample, {
-        location: '/derp/derp',
-      }),
-    ),
+  await fs.rm(join(path, 'index.html'), { recursive: true }).catch(() => {})
+  await fs.mkdir(path).catch(() => {})
+  const x = renderToString(
+    React.createElement(SSRRouterExample, {
+      location: '/derp/derp',
+    }),
   )
+
+  console.info(join(path, 'index.html'))
+
+  await fs.writeFile(join(path, 'index.html'), x)
 
   t.true(true)
 })

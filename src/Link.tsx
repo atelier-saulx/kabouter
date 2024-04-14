@@ -69,7 +69,8 @@ export const Link: FC<LinkProps> = ({
     const qP = query ? '?' + serializeQuery(query) : ''
     const hP = hash ? '#' + hash : ''
 
-    return ctx.route.rootCtx.prefix + link + hP + qP
+    const p = ctx.route.rootCtx.prefix + link + hP + qP
+    return p || '/'
   }, [path ? hashObjectIgnoreKeyOrder(path) : null, query, hash, href])
 
   const wrappedOnClick: MouseEventHandler<HTMLAnchorElement> = useCallback(
