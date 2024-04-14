@@ -17,10 +17,30 @@ const PathLink = ({ path }) => {
   )
 }
 
+const Bla = () => {
+  const r = useRoute()
+  return (
+    <div>
+      <p>SECTION: {r.path.section}</p>
+
+      <p>ARTICLE: {r.path.article}</p>
+      <PathLink path={{ article: null, section: null }} />
+    </div>
+  )
+}
+
 const Things = () => {
   const r = useRoute('[section]/[article]')
+
   return r.nest(
     <div>
+      <p>LOCATION: {r.location}</p>
+
+      <p>SECTION: {r.path.section}</p>
+
+      <p>ARTICLE: {r.path.article}</p>
+      <Bla />
+
       <div
         onClick={() => {
           r.setPath({ section: 'YO' })
@@ -28,7 +48,6 @@ const Things = () => {
       >
         CLICK
       </div>
-      <PathLink path={{ article: 'snurp', section: 'flap' }} />
       <PathLink path={{ article: 'snarp', section: 'eu' }} />
     </div>,
   )
@@ -38,28 +57,16 @@ export const RouterExample: FC<{ location?: string }> = ({ location }) => {
   return (
     <div style={{ padding: 100 }}>
       <Router
-        prefix="/ssr"
         location={
           location
             ? {
                 path: location.split('?')[0],
                 query: location.split('?')[1],
               }
-            : {
-                path: '/ssr',
-                query: '',
-              }
+            : undefined
         }
       >
         <Things />
-        <div>
-          <Link href={'/paniloris'}>href</Link>
-        </div>
-        <div>
-          <Link query={null}>RESET</Link>
-        </div>
-        <QueryLink query={{ articleId: 'foo' }} />
-        <QueryLink query={{ articleId: 'bar' }} />
       </Router>
     </div>
   )

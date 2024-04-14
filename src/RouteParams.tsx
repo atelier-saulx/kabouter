@@ -32,7 +32,7 @@ export class RouteParams {
     rootCtx: RouterRootCtx,
     start: number,
     fromPath: PathSegment[],
-    path?: string
+    path?: string,
   ) {
     this.ctx = ctx
     this.rootCtx = rootCtx
@@ -81,16 +81,12 @@ export class RouteParams {
   }
 
   update(): boolean {
-    if (this._usesLocation) {
-      return true
-    }
-
     if (this.preparedPath.length && this.rootCtx.pathChanged) {
       const nParams = parseRoute(
         this.rootCtx,
         this._fromPath,
         this.preparedPath,
-        this.start
+        this.start,
       )
 
       if (!deepEqual(this._pathParams || {}, nParams)) {
@@ -106,6 +102,10 @@ export class RouteParams {
     }
 
     if (this._usesHash && this.rootCtx.hashChanged) {
+      return true
+    }
+
+    if (this._usesLocation) {
       return true
     }
 
@@ -140,7 +140,7 @@ export class RouteParams {
             this.rootCtx,
             this._fromPath,
             this.preparedPath,
-            this.start
+            this.start,
           ))
       : {}
   }
@@ -312,7 +312,7 @@ export class RouteParams {
             } else {
               r[0] = r[0].replaceAll(
                 `[${rKey}]`,
-                p[key] === undefined ? '*' : String(p[key])
+                p[key] === undefined ? '*' : String(p[key]),
               )
             }
           }

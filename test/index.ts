@@ -1,5 +1,5 @@
 import React from 'react'
-import { renderToPipeableStream } from 'react-dom/server'
+import { renderToPipeableStream, renderToString } from 'react-dom/server'
 import test from 'ava'
 import { RouterExample } from './browser/App.js'
 import { RouterExample as SSRRouterExample } from './browser/SSRApp.js'
@@ -8,10 +8,10 @@ import fs from 'node:fs/promises'
 import { join } from 'node:path'
 import { createWriteStream } from 'node:fs'
 import * as url from 'url'
+const path = join(url.fileURLToPath(new URL('.', import.meta.url)), 'tmp')
 
 test('path', async (t) => {
-  const path = join(url.fileURLToPath(new URL('.', import.meta.url)), 'tmp')
-  await fs.rm(join(path, 'index.html')).catch(() => {})
+  await fs.rm(join(path, 'index.html'), { recursive: true }).catch(() => {})
   await fs.mkdir(path).catch(() => {})
   const writeHandler = createWriteStream(join(path, 'index.html'))
 
@@ -32,8 +32,7 @@ test('path', async (t) => {
 })
 
 test('path + query', async (t) => {
-  const path = join(url.fileURLToPath(new URL('.', import.meta.url)), 'tmp')
-  await fs.rm(join(path, 'index.html')).catch(() => {})
+  await fs.rm(join(path, 'index.html'), { recursive: true }).catch(() => {})
   await fs.mkdir(path).catch(() => {})
   const writeHandler = createWriteStream(join(path, 'index.html'))
 
@@ -49,4 +48,16 @@ test('path + query', async (t) => {
   const file = await fs.readFile(join(path, 'index.html'))
 
   t.true(file.includes('/ssr/?articleId=foo'))
+})
+
+test.only('path + reset', async (t) => {
+  console.info(
+    renderToString(
+      React.createElement(SSRRouterExample, {
+        location: '/derp/derp',
+      }),
+    ),
+  )
+
+  t.true(true)
 })
