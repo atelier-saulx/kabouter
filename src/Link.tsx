@@ -61,7 +61,7 @@ export const Link: FC<LinkProps> = ({
 
     if (path) {
       const loc = ctx.route.parseLocation(path)
-      link = loc
+      link = loc.split('?')[0]
     } else {
       link = ctx.route.rootCtx.location.replace(ctx.route.rootCtx.prefixRe, '')
     }
