@@ -99,7 +99,7 @@ export const Link: FC<LinkProps> = ({
         return false
       }
     },
-    [hrefParsed],
+    [hrefParsed, onClick],
   )
 
   return <a href={hrefParsed} onClick={wrappedOnClick} {...props} />

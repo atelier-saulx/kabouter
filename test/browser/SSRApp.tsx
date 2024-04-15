@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { Router, Link, useRoute } from '../../src/index.js'
 
 const QueryLink = ({ query }) => {
@@ -18,6 +18,7 @@ const PathLink = ({ path }) => {
 }
 
 const Bla = () => {
+  const [open, setOpen] = useState(false)
   const r = useRoute()
   return (
     <div
@@ -33,6 +34,7 @@ const Bla = () => {
       <div
         style={{
           marginTop: 50,
+          marginBottom: 50,
         }}
         onClick={() => {
           r.setPath({
@@ -43,6 +45,19 @@ const Bla = () => {
       >
         Click
       </div>
+
+      <Link
+        onClick={() => {
+          if (!open) {
+            setOpen(true)
+            return true
+          }
+          console.log('GO')
+        }}
+        path={{ section: 'GO', article: 'GO TIME' }}
+      >
+        GO time
+      </Link>
     </div>
   )
 }
