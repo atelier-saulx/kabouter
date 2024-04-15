@@ -20,13 +20,29 @@ const PathLink = ({ path }) => {
 const Bla = () => {
   const r = useRoute()
   return (
-    <div>
-      <p>LOCATION: {r.location}</p>
-
-      {/* <p>SECTION: {r.path.section}</p> */}
-
-      {/* <p>ARTICLE: {r.path.article}</p> */}
+    <div
+      style={{
+        marginTop: 20,
+        paddingTop: 20,
+        borderTop: '1px solid black',
+      }}
+    >
+      <p>SECTION: {r.path.section}</p>
+      <p>ARTICLE: {r.path.article}</p>
       <PathLink path={{ section: null, article: null }} />
+      <div
+        style={{
+          marginTop: 50,
+        }}
+        onClick={() => {
+          r.setPath({
+            section: 'FLAP',
+            article: 'BLA',
+          })
+        }}
+      >
+        Click
+      </div>
     </div>
   )
 }

@@ -77,7 +77,9 @@ export const Link: FC<LinkProps> = ({
     (e) => {
       if (onClick) {
         if (onClick(e)) {
-          return
+          e.preventDefault()
+          e.stopPropagation()
+          return false
         }
       }
       if (!hrefParsed.startsWith('http')) {
@@ -94,6 +96,7 @@ export const Link: FC<LinkProps> = ({
         if (path) {
           ctx.route.setPath(path)
         }
+        return false
       }
     },
     [hrefParsed],

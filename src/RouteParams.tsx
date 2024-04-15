@@ -134,6 +134,16 @@ export class RouteParams {
   ```
   */
   get path(): { [key: string]: Value } {
+    if (!this.preparedPath.length) {
+      let p: void | typeof this.ctx = this.ctx
+      while (p) {
+        if (p.route?.preparedPath) {
+          return p.route.path
+        }
+        p = p.parent
+      }
+    }
+
     return this.preparedPath.length
       ? this._pathParams ||
           (this._pathParams = parseRoute(

@@ -29,7 +29,7 @@ Hook to listen to and update `location`
 */
 export const useRoute = (
   path?: string,
-  defaultValues?: { [key: string]: Value }
+  defaultValues?: { [key: string]: Value },
 ): RouteParams => {
   const ctx = useContext(RouterContext)
 
